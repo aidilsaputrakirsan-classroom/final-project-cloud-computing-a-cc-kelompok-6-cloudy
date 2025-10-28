@@ -2,71 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $filter = $request->input('filter');
+        $search   = $request->input('search');
+        $filter   = $request->input('filter');
+        $category = $request->input('category');
 
-        $products = \App\Models\Product::when($search, function ($query, $search) {
+        $query = Product::with('category'); // relasi dengan tabel categories
+
+        if ($search) {
             $query->where('name', 'like', "%{$search}%");
-        })
-        ->when($filter, function ($query, $filter) {
-            switch ($filter) {
-                case 'price_asc':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_desc':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'stock_asc':
-                    $query->orderBy('stock', 'asc');
-                    break;
-                case 'stock_desc':
-                    $query->orderBy('stock', 'desc');
-                    break;
-                default:
-                    $query->orderBy('created_at', 'desc');
-            }
-        }, function ($query) {
-            $query->orderBy('created_at', 'desc');
-        })
-        ->paginate(8);
+        }
 
-        return view('products.index', compact('products'));
+        if ($category) {
+            $query->where('category_id', $category);
+        }
+
+        $products = $query->paginate(5);
+
+        // ✅ ambil data kategori dari tabel categories
+        $categories = Category::all();
+
+        return view('products.index', compact('products', 'categories'));
     }
 
-    public function create(){ return view('products.create'); }
-
-    public function store(Request $request){
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-        Product::create($request->all());
-        return redirect()->route('products.index');
+    public function create()
+    {
+        $categories = Category::all();
+        return view('products.create', compact('categories'));
     }
 
-    public function edit(Product $product){ return view('products.edit', compact('product')); }
+    public function destroy($id)
+    {
+    $product = Product::findOrFail($id);
+    $product->delete();
 
-    public function update(Request $request, Product $product){
-        $request->validate([
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'stock' => 'required|integer',
-        ]);
-        $product->update($request->all());
-        return redirect()->route('products.index');
+    return redirect()->route('products.index')->with('success', 'Produk berhasil dihapus!');
     }
 
-    public function destroy(Product $product){
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
-   }
-   
 }
