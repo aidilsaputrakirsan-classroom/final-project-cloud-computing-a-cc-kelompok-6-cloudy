@@ -79,12 +79,18 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            // Soft-disable delete functionality while keeping the UI and route.
-            // We still verify the product exists to show meaningful feedback.
-            Product::findOrFail($id);
+            $product = Product::findOrFail($id);
+            
+            // Delete image if exists
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+            
+            // Delete product
+            $product->delete();
 
             return redirect()->route('admin.products.index')
-                ->with('info', 'Fitur hapus sementara dinonaktifkan. Tidak ada data yang dihapus.');
+                ->with('success', 'Produk berhasil dihapus!');
         } catch (\Exception $e) {
             return redirect()->route('admin.products.index')
                 ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
