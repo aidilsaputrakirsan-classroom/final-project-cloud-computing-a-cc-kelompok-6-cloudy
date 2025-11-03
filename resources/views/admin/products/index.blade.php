@@ -89,7 +89,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
                     <h1 class="h3 mb-1"><i class="bi bi-box-seam me-2"></i>Manajemen Produk</h1>
-                    <p class="text-muted mb-0">Kelola produk Anda dengan mudah berdasarkan kategori</p>
+                    <p class="text-muted mb-0">Kelola produk Anda dengan mudah</p>
                 </div>
                 <button class="btn btn-primary btn-tambah" data-bs-toggle="modal" data-bs-target="#modalProduk">
                     <i class="bi bi-plus-circle me-2"></i>Tambah Produk
@@ -98,20 +98,6 @@
         </div>
 
         <div class="card">
-            <div class="card-body">
-                <!-- Filter Dropdown -->
-                <div class="mb-3">
-                    <label for="filterCategory" class="form-label fw-bold">
-                        <i class="bi bi-funnel me-2"></i>Filter Kategori
-                    </label>
-                    <select id="filterCategory" class="form-select" style="max-width: 250px;">
-                        <option value="all">Semua Kategori</option>
-                        <option value="pria">Pria</option>
-                        <option value="wanita">Wanita</option>
-                    </select>
-                </div>
-            </div>
-            
             <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
@@ -120,7 +106,6 @@
                                         <th style="width: 5%">No</th>
                                         <th style="width: 12%">Gambar</th>
                                         <th style="width: 18%">Nama Produk</th>
-                                        <th style="width: 15%">Kategori</th>
                                         <th style="width: 20%">Deskripsi</th>
                                         <th style="width: 12%">Harga</th>
                                         <th style="width: 10%">Stok</th>
@@ -130,7 +115,7 @@
                                 <tbody>
                                     @php $allProducts = $productsPria->concat($productsWanita); @endphp
                                     @forelse($allProducts as $index => $product)
-                                    <tr data-category="{{ $product->category }}">
+                                    <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>
                                             @if($product->image && str_starts_with($product->image, 'http'))
@@ -140,11 +125,6 @@
                                             @endif
                                         </td>
                                         <td><strong>{{ $product->name }}</strong></td>
-                                        <td>
-                                            <span class="badge {{ $product->category == 'pria' ? 'bg-primary' : 'bg-danger' }}">
-                                                {{ ucfirst($product->category) }}
-                                            </span>
-                                        </td>
                                         <td><small>{{ $product->description }}</small></td>
                                         <td><strong class="text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</strong></td>
                                         <td>
@@ -171,7 +151,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                             <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
                                             <p class="text-muted mt-2">Belum ada produk. Silakan tambah produk baru!</p>
                                         </td>
@@ -370,28 +350,6 @@
             var bsToast = new bootstrap.Toast(toast);
             bsToast.show();
         });
-
-        // Filter kategori dengan dropdown
-        var filterSelect = document.getElementById('filterCategory');
-        if (filterSelect) {
-            filterSelect.addEventListener('change', function() {
-                var category = this.value;
-                var rows = document.querySelectorAll('tbody tr');
-                
-                rows.forEach(function(row) {
-                    if (category === 'all') {
-                        row.style.display = '';
-                    } else {
-                        var dataCategory = row.getAttribute('data-category');
-                        if (dataCategory && dataCategory === category) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    }
-                });
-            });
-        }
     });
 </script>
 @endpush
