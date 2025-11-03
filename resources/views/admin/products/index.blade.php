@@ -105,11 +105,12 @@
                                     <tr>
                                         <th style="width: 5%">No</th>
                                         <th style="width: 12%">Gambar</th>
-                                        <th style="width: 18%">Nama Produk</th>
-                                        <th style="width: 20%">Deskripsi</th>
+                                        <th style="width: 15%">Nama Produk</th>
+                                        <th style="width: 12%">Kategori</th>
+                                        <th style="width: 18%">Deskripsi</th>
                                         <th style="width: 12%">Harga</th>
                                         <th style="width: 10%">Stok</th>
-                                        <th style="width: 18%">Aksi</th>
+                                        <th style="width: 16%">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,6 +125,13 @@
                                             @endif
                                         </td>
                                         <td><strong>{{ $product->name }}</strong></td>
+                                        <td>
+                                            @if($product->category)
+                                                <span class="badge bg-primary">{{ $product->category->name }}</span>
+                                            @else
+                                                <span class="badge bg-secondary">Tidak ada kategori</span>
+                                            @endif
+                                        </td>
                                         <td><small>{{ $product->description }}</small></td>
                                         <td><strong class="text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</strong></td>
                                         <td>
@@ -150,7 +158,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-4">
+                                        <td colspan="8" class="text-center py-4">
                                             <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
                                             <p class="text-muted mt-2">Belum ada produk. Silakan tambah produk baru!</p>
                                         </td>
@@ -179,6 +187,16 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama Produk</label>
                             <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Kategori</label>
+                            <select class="form-select" name="category_id" id="category_id">
+                                <option value="">Pilih Kategori (Opsional)</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Pilih kategori untuk produk ini (opsional)</small>
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">Deskripsi</label>
@@ -225,6 +243,18 @@
                         <div class="mb-3">
                             <label class="form-label">Nama Produk</label>
                             <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kategori</label>
+                            <select class="form-select" name="category_id">
+                                <option value="">Pilih Kategori (Opsional)</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <small class="text-muted">Pilih kategori untuk produk ini (opsional)</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>

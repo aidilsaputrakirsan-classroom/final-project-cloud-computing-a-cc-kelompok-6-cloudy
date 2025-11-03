@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,10 +11,12 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('category')->get();
+        $categories = Category::where('is_active', true)->orderBy('name')->get();
         
         return view('admin.products.index', [
-            'products' => $products
+            'products' => $products,
+            'categories' => $categories
         ]);
     }
 
@@ -25,7 +28,8 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'category_id' => 'nullable|exists:categories,id'
             ]);
 
             if ($request->hasFile('image')) {
@@ -52,7 +56,8 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'category_id' => 'nullable|exists:categories,id'
             ]);
 
             if ($request->hasFile('image')) {
