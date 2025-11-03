@@ -10,12 +10,10 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $productsPria = Product::where('category', 'pria')->get();
-        $productsWanita = Product::where('category', 'wanita')->get();
+        $products = Product::all();
         
         return view('admin.products.index', [
-            'productsPria' => $productsPria,
-            'productsWanita' => $productsWanita
+            'products' => $products
         ]);
     }
 
@@ -27,8 +25,7 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-                'category' => 'required|in:pria,wanita'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
             ]);
 
             if ($request->hasFile('image')) {
@@ -55,8 +52,7 @@ class ProductController extends Controller
                 'description' => 'required|string',
                 'price' => 'required|numeric|min:0',
                 'stock' => 'required|integer|min:0',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-                'category' => 'required|in:pria,wanita'
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
             ]);
 
             if ($request->hasFile('image')) {

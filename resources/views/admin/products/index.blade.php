@@ -113,8 +113,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php $allProducts = $productsPria->concat($productsWanita); @endphp
-                                    @forelse($allProducts as $index => $product)
+                                    @forelse($products as $index => $product)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>
@@ -178,13 +177,6 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="category" class="form-label">Kategori</label>
-                            <select class="form-select" name="category" required>
-                                <option value="pria">Pria</option>
-                                <option value="wanita">Wanita</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label for="name" class="form-label">Nama Produk</label>
                             <input type="text" class="form-control" name="name" required>
                         </div>
@@ -218,7 +210,7 @@
     </div>
 
     <!-- Modal Edit Produk -->
-    @foreach($productsPria as $product)
+    @foreach($products as $product)
     <div class="modal fade" id="modalEditProduk{{ $product->id }}" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -230,71 +222,6 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Kategori</label>
-                            <select class="form-select" name="category" required>
-                                <option value="pria" {{ $product->category == 'pria' ? 'selected' : '' }}>Pria</option>
-                                <option value="wanita" {{ $product->category == 'wanita' ? 'selected' : '' }}>Wanita</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nama Produk</label>
-                            <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Deskripsi</label>
-                            <textarea class="form-control" name="description" rows="3" required>{{ $product->description }}</textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Harga</label>
-                                <input type="number" class="form-control" name="price" value="{{ $product->price }}" min="0" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Stok</label>
-                                <input type="number" class="form-control" name="stock" value="{{ $product->stock }}" min="0" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Gambar Produk</label>
-                            <input type="file" class="form-control" name="image" accept="image/*">
-                            <small class="text-muted">Kosongkan jika tidak ingin mengubah gambar. Format: JPG, PNG, atau WEBP (Maks. 2MB)</small>
-                            @if($product->image)
-                                <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Current" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Perbarui</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    @endforeach
-
-    @foreach($productsWanita as $product)
-    <div class="modal fade" id="modalEditProduk{{ $product->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Kategori</label>
-                            <select class="form-select" name="category" required>
-                                <option value="pria" {{ $product->category == 'pria' ? 'selected' : '' }}>Pria</option>
-                                <option value="wanita" {{ $product->category == 'wanita' ? 'selected' : '' }}>Wanita</option>
-                            </select>
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">Nama Produk</label>
                             <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
