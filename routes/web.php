@@ -3,8 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
-Route::get('/', fn () => view('welcome'));
+Route::get('/', fn () => redirect()->route('login'));
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => view('dashboard'))->name('dashboard');
@@ -22,5 +23,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 Route::middleware(['auth','verified','role:admin'])->group(function () {
     Route::resource('categories', CategoryController::class);
 });
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
 require __DIR__.'/auth.php';
