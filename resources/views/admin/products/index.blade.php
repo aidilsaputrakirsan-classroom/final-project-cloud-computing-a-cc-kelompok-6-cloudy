@@ -5,28 +5,28 @@
 @push('styles')
 <style>
     .page-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #e9ecef; }
-    .btn-tambah { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 0.75rem 1.5rem; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s; }
+    .btn-tambah { background: linear-gradient(135deg, #0E5DA5 55%, #8cbff1 100%); border: none; padding: 0.75rem 1.5rem; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s; }
     .btn-tambah:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5); }
     .card { border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
     .table { background: white; }
-    .table thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+    .table thead { background: linear-gradient(135deg, #0E5DA5 55%, #8cbff1 100%); color: white; }
     .table thead th { border: none; padding: 1rem; font-weight: 600; }
     .table tbody tr { transition: all 0.2s; }
     .table tbody tr:hover { background-color: #f8f9fa; transform: scale(1.01); }
     .table tbody td { vertical-align: middle; padding: 1rem; }
     .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .btn-action { width: 40px; height: 40px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s; border: none; }
-    .btn-edit { background-color: #ffeaa7; color: #fdcb6e; margin-right: 0.5rem; }
-    .btn-edit:hover { background-color: #fdcb6e; color: white; transform: scale(1.1); }
-    .btn-delete { background-color: #fab1a0; color: #e17055; }
-    .btn-delete:hover { background-color: #e17055; color: white; transform: scale(1.1); }
-    .modal-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: calc(0.5rem - 1px) calc(0.5rem - 1px) 0 0; }
+    .btn-edit { background-color: #ffc562; color: #white; margin-right: 0.5rem; }
+    .btn-edit:hover { background-color: #ffc562; color: white; transform: scale(1.1); }
+    .btn-delete { background-color: #fc4c4c; color: white; }
+    .btn-delete:hover { background-color: #fc4c4c; color: white; transform: scale(1.1); }
+    .modal-header { background: linear-gradient(135deg, #0E5DA5 55%, #8cbff1 100%); color: white; border-radius: calc(0.5rem - 1px) calc(0.5rem - 1px) 0 0; }
     .modal-header .btn-close { filter: invert(1); }
     .form-label { font-weight: 600; color: #495057; margin-bottom: 0.5rem; }
     .form-control, .form-select { border-radius: 8px; border: 1px solid #dee2e6; padding: 0.75rem; transition: all 0.3s; }
     .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
     .badge-stok { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
-    .badge-stok-tersedia { background-color: #d1f2eb; color: #00b894; }
+    .badge-stok-tersedia { background-color: #d1f2d4; color: #006d0d; }
     .badge-stok-habis { background-color: #f8c1c1; color: #d63031; }
     .badge-stok-sedikit { background-color: #ffeaa7; color: #fdcb6e; }
     .bg-pink { background-color: #ff69b4 !important; color: white; }
@@ -109,84 +109,86 @@
         </div>
 
         <div class="card">
-            <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 5%">No</th>
-                                        <th style="width: 12%">Gambar</th>
-                                        <th style="width: 15%">Nama Produk</th>
-                                        <th style="width: 12%">Kategori</th>
-                                        <th style="width: 18%">Deskripsi</th>
-                                        <th style="width: 12%">Harga</th>
-                                        <th style="width: 10%">Stok</th>
-                                        <th style="width: 16%">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($products as $index => $product)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>
-                                            @php
-                                                $placeholder = 'https://via.placeholder.com/80x80?text=Produk';
-                                            @endphp
-                                            @if($product->image)
-                                                @if(str_starts_with($product->image, 'http'))
-                                                    <img src="{{ $product->image }}" alt="Produk" class="product-img">
-                                                @else
-                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" class="product-img">
-                                                @endif
-                                            @else
-                                                <img src="{{ $placeholder }}" alt="Produk" class="product-img">
-                                            @endif
-                                        </td>
-                                        <td><strong>{{ $product->name }}</strong></td>
-                                        <td>
-                                            @if($product->category)
-                                                <span class="badge bg-primary">{{ $product->category->name }}</span>
-                                            @else
-                                                <span class="badge bg-secondary">Tidak ada kategori</span>
-                                            @endif
-                                        </td>
-                                        <td><small>{{ $product->description }}</small></td>
-                                        <td><strong class="text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</strong></td>
-                                        <td>
-                                            @if($product->stock > 20)
-                                                <span class="badge badge-stok badge-stok-tersedia">Tersedia ({{ $product->stock }})</span>
-                                            @elseif($product->stock > 0)
-                                                <span class="badge badge-stok badge-stok-sedikit">Sedikit ({{ $product->stock }})</span>
-                                            @else
-                                                <span class="badge badge-stok badge-stok-habis">Habis ({{ $product->stock }})</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditProduk{{ $product->id }}">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <form id="delete-form-{{ $product->id }}" action="{{ route('admin.products.destroy', $product->id) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $product->id }}, '{{ $product->name }}')">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4">
-                                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
-                                            <p class="text-muted mt-2">Belum ada produk. Silakan tambah produk baru!</p>
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-            </div>
+            <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">No</th>
+                        <th style="width: 12%">Gambar</th>
+                        <th style="width: 15%">Nama Produk</th>
+                        <th style="width: 12%">Kategori</th>
+                        <th style="width: 18%">Deskripsi</th>
+                        <th style="width: 12%">Harga</th>
+                        <th style="width: 10%">Stok</th>
+                        <th style="width: 16%">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($products as $index => $product)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>
+                            @php
+                                $placeholder = 'https://via.placeholder.com/80x80?text=Produk';
+                            @endphp
+                            @if($product->image)
+                                @if(str_starts_with($product->image, 'http'))
+                                    <img src="{{ $product->image }}" alt="Produk" class="product-img">
+                                @else
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" class="product-img">
+                                @endif
+                            @else
+                                <img src="{{ $placeholder }}" alt="Produk" class="product-img">
+                            @endif
+                        </td>
+                        <td><strong>{{ $product->name }}</strong></td>
+                        <td>
+                            @if($product->category)
+                                <span class="badge bg-primary">{{ $product->category->name }}</span>
+                            @else
+                                <span class="badge bg-secondary">Tidak ada kategori</span>
+                            @endif
+                        </td>
+                        <td><small>{{ $product->description }}</small></td>
+                        <td><strong class="text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</strong></td>
+                        <td>
+                            @if($product->stock > 20)
+                                <span class="badge badge-stok badge-stok-tersedia">Tersedia ({{ $product->stock }})</span>
+                            @elseif($product->stock > 0)
+                                <span class="badge badge-stok badge-stok-sedikit">Sedikit ({{ $product->stock }})</span>
+                            @else
+                                <span class="badge badge-stok badge-stok-habis">Habis ({{ $product->stock }})</span>
+                            @endif
+                        </td>
+                        <td>
+                            <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditProduk{{ $product->id }}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form id="delete-form-{{ $product->id }}" action="{{ route('admin.products.destroy', $product->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $product->id }}, '{{ $product->name }}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
+                            <p class="text-muted mt-2">Belum ada produk. Silakan tambah produk baru!</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
+    </div>
+</div>
+
     </div>
 
     <!-- Modal Tambah Produk -->

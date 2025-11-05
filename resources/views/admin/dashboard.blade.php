@@ -2,10 +2,12 @@
 
 @section('title', 'Dashboard')
 
+@section('page_header')
+    <h5 class="mb-0">Welcome to Dashboard!</h5>
+@endsection
+
 @section('content')
 <div class="container-fluid px-0">
-    <h4 class="mb-4">Dashboard</h4>
-
     <div class="row g-3">
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
