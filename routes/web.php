@@ -6,7 +6,13 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect('/admin/products');
+    if (auth()->check()) {
+        if (auth()->user()->role === 'admin') {
+            return redirect('/admin/products');
+        }
+        return redirect('/dashboard');
+    }
+    return redirect('/login');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
