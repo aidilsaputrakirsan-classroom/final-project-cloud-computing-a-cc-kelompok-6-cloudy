@@ -9,14 +9,31 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->get();
+        $searchKeyword = trim((string) $request->query('q', ''));
+
+        $products = Product::with('category')
+            ->when($searchKeyword !== '', function ($query) use ($searchKeyword) {
+                $like = '%' . $searchKeyword . '%';
+                // Use ILIKE for PostgreSQL case-insensitive search
+                $query->where(function ($subQuery) use ($like) {
+                    $subQuery->where('name', 'ILIKE', $like)
+                        ->orWhere('description', 'ILIKE', $like);
+                })
+                ->orWhereHas('category', function ($catQuery) use ($like) {
+                    $catQuery->where('name', 'ILIKE', $like);
+                });
+            })
+            ->orderBy('name')
+            ->get();
+
         $categories = Category::where('is_active', true)->orderBy('name')->get();
         
         return view('admin.products.index', [
             'products' => $products,
-            'categories' => $categories
+            'categories' => $categories,
+            'q' => $searchKeyword,
         ]);
     }
 

@@ -82,18 +82,18 @@
     <div class="wrapper">
         <!-- Sidebar Fixed -->
         <div class="sidebar">
-            <a href="#" class="sidebar-brand">
+            <a href="/admin" class="sidebar-brand">
                 <i class="bi bi-cloud"></i> Cloudy
             </a>
             <nav class="navbar flex-column">
                 <ul class="navbar-nav w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ request()->is('dashboard') ? 'active' : '' }}" href="/dashboard">
                             <i class="bi bi-speedometer2 me-2"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">
+                        <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="/admin/products">
                             <i class="bi bi-box-seam me-2"></i> Produk
                         </a>
                     </li>

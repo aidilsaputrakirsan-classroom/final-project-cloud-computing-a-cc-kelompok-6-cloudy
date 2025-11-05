@@ -91,9 +91,20 @@
                     <h1 class="h3 mb-1"><i class="bi bi-box-seam me-2"></i>Manajemen Produk</h1>
                     <p class="text-muted mb-0">Kelola produk Anda dengan mudah</p>
                 </div>
-                <button class="btn btn-primary btn-tambah" data-bs-toggle="modal" data-bs-target="#modalProduk">
-                    <i class="bi bi-plus-circle me-2"></i>Tambah Produk
-                </button>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <form method="GET" action="{{ route('admin.products.index') }}" class="d-flex" role="search">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                            <input type="text" name="q" value="{{ request('q', $q ?? '') }}" class="form-control" placeholder="Cari produk atau kategori..." />
+                            @if(request('q'))
+                                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Reset</a>
+                            @endif
+                        </div>
+                    </form>
+                    <button class="btn btn-primary btn-tambah" data-bs-toggle="modal" data-bs-target="#modalProduk">
+                        <i class="bi bi-plus-circle me-2"></i>Tambah Produk
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -118,10 +129,17 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>
-                                            @if($product->image && str_starts_with($product->image, 'http'))
-                                                <img src="{{ $product->image }}" alt="Produk" class="product-img">
+                                            @php
+                                                $placeholder = 'https://via.placeholder.com/80x80?text=Produk';
+                                            @endphp
+                                            @if($product->image)
+                                                @if(str_starts_with($product->image, 'http'))
+                                                    <img src="{{ $product->image }}" alt="Produk" class="product-img">
+                                                @else
+                                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" class="product-img">
+                                                @endif
                                             @else
-                                                <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" class="product-img">
+                                                <img src="{{ $placeholder }}" alt="Produk" class="product-img">
                                             @endif
                                         </td>
                                         <td><strong>{{ $product->name }}</strong></td>
