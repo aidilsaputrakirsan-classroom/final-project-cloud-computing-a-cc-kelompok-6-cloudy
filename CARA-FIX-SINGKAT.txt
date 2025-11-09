@@ -1,0 +1,65 @@
+╔═══════════════════════════════════════════════════════════════╗
+║         CARA FIX ERROR POSTGRESQL - SINGKAT & JELAS          ║
+╚═══════════════════════════════════════════════════════════════╝
+
+FILE .ENV SUDAH DIPERBARUI!
+Sekarang lakukan 2 hal ini:
+
+┌─────────────────────────────────────────────────────────────┐
+│ LANGKAH 1: BUAT DATABASE DI PGADMIN                         │
+└─────────────────────────────────────────────────────────────┘
+
+1. Buka pgAdmin
+2. Login (gunakan password PostgreSQL yang Anda tahu)
+3. Klik kanan "Databases" → "Query Tool"
+4. Copy-paste script ini dan jalankan:
+
+   CREATE USER cloudy_user WITH PASSWORD 'cloudy123';
+   CREATE DATABASE cloudy_project OWNER cloudy_user;
+   GRANT ALL PRIVILEGES ON DATABASE cloudy_project TO cloudy_user;
+
+5. Klik "Execute" (F5)
+
+┌─────────────────────────────────────────────────────────────┐
+│ LANGKAH 2: SETUP SCHEMA (PENTING!)                          │
+└─────────────────────────────────────────────────────────────┘
+
+1. Di pgAdmin, klik kanan database "cloudy_project"
+2. Pilih "Query Tool"
+3. Copy-paste script ini dan jalankan:
+
+   GRANT ALL ON SCHEMA public TO cloudy_user;
+   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloudy_user;
+   ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO cloudy_user;
+   ALTER SCHEMA public OWNER TO cloudy_user;
+
+4. Klik "Execute" (F5)
+
+┌─────────────────────────────────────────────────────────────┐
+│ LANGKAH 3: JALANKAN DI POWERSHELL                            │
+└─────────────────────────────────────────────────────────────┘
+
+   php artisan migrate:status
+
+Jika berhasil (tidak error), lanjutkan:
+
+   php artisan migrate
+   php artisan db:seed --class=AdminUserSeeder
+   php artisan serve
+
+┌─────────────────────────────────────────────────────────────┐
+│ LOGIN KE APLIKASI                                            │
+└─────────────────────────────────────────────────────────────┘
+
+   URL: http://127.0.0.1:8000
+   Email: admin@cloudywear.test
+   Password: password123
+
+╔═══════════════════════════════════════════════════════════════╗
+║  CATATAN: File .env sudah diupdate ke:                       ║
+║  - DB_USERNAME=cloudy_user                                    ║
+║  - DB_PASSWORD=cloudy123                                      ║
+║  - DB_DATABASE=cloudy_project                                 ║
+╚═══════════════════════════════════════════════════════════════╝
+
+

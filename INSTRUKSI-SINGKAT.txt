@@ -1,0 +1,79 @@
+╔═══════════════════════════════════════════════════════════════╗
+║           INSTRUKSI SINGKAT - PILIH SALAH SATU               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════
+OPSI A: GUNAKAN SQLITE (PALING MUDAH - DISARANKAN!)
+═══════════════════════════════════════════════════════════════
+
+Jalankan di PowerShell:
+
+    .\SWITCH-TO-SQLITE.ps1
+
+Kemudian:
+
+    php artisan migrate
+    php artisan db:seed --class=AdminUserSeeder
+    php artisan serve
+
+SELESAI! Tidak perlu setup database server.
+
+═══════════════════════════════════════════════════════════════
+OPSI B: BUAT USER DI POSTGRESQL (Jika harus pakai PostgreSQL)
+═══════════════════════════════════════════════════════════════
+
+LANGKAH 1: Buka pgAdmin
+   → Login ke PostgreSQL (gunakan password yang Anda tahu)
+
+LANGKAH 2: Buat User dan Database
+   → Klik kanan "Databases" → "Query Tool"
+   → Copy-paste script ini dan jalankan:
+
+      CREATE USER cloudy_user WITH PASSWORD 'cloudy123';
+      CREATE DATABASE cloudy_project OWNER cloudy_user;
+      GRANT ALL PRIVILEGES ON DATABASE cloudy_project TO cloudy_user;
+
+LANGKAH 3: Setup Schema
+   → Klik kanan database "cloudy_project" → "Query Tool"
+   → Copy-paste script ini dan jalankan:
+
+      GRANT ALL ON SCHEMA public TO cloudy_user;
+      ALTER SCHEMA public OWNER TO cloudy_user;
+      ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloudy_user;
+
+LANGKAH 4: Test
+   → php artisan migrate:status
+   → php artisan migrate
+   → php artisan db:seed --class=AdminUserSeeder
+
+═══════════════════════════════════════════════════════════════
+OPSI C: Gunakan User PostgreSQL yang Sudah Ada
+═══════════════════════════════════════════════════════════════
+
+Jika Anda bisa login ke pgAdmin dengan user tertentu:
+
+1. Catat username dan password yang Anda pakai login
+2. Update .env:
+
+   (Get-Content .env) -replace 'DB_USERNAME=cloudy_user', 'DB_USERNAME=USERNAME_ANDA' | Set-Content .env
+   (Get-Content .env) -replace 'DB_PASSWORD=cloudy123', 'DB_PASSWORD=PASSWORD_ANDA' | Set-Content .env
+   php artisan config:clear
+
+3. Buat database di pgAdmin:
+
+   CREATE DATABASE cloudy_project OWNER USERNAME_ANDA;
+
+4. Test:
+
+   php artisan migrate:status
+
+═══════════════════════════════════════════════════════════════
+REKOMENDASI
+═══════════════════════════════════════════════════════════════
+
+→ Untuk DEVELOPMENT: Gunakan SQLite (Opsi A) - PALING MUDAH!
+→ Untuk PRODUCTION: Gunakan PostgreSQL (Opsi B atau C)
+
+═══════════════════════════════════════════════════════════════
+
+

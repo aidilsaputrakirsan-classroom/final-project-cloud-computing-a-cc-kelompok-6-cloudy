@@ -1,0 +1,122 @@
+═══════════════════════════════════════════════════════════════
+  CARA FIX ERROR POSTGRESQL - LANGKAH DEMI LANGKAH
+═══════════════════════════════════════════════════════════════
+
+FILE .ENV SUDAH DIPERBARUI OTOMATIS!
+Sekarang ikuti langkah berikut:
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 1: BUKA PGADMIN
+═══════════════════════════════════════════════════════════════
+
+1. Buka pgAdmin
+2. Login ke PostgreSQL server (gunakan password yang Anda tahu)
+3. Setelah login berhasil, lanjut ke Langkah 2
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 2: BUAT USER DAN DATABASE
+═══════════════════════════════════════════════════════════════
+
+1. Di pgAdmin, klik kanan pada "Databases" (di sidebar kiri)
+2. Pilih "Query Tool"
+3. Buka file: FIX-DATABASE-NOW.sql
+4. Copy-paste isi file tersebut ke Query Tool
+5. Klik tombol "Execute" (atau tekan F5)
+6. Pastikan tidak ada error (harus muncul "Success")
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 3: SETUP SCHEMA PRIVILEGES
+═══════════════════════════════════════════════════════════════
+
+1. Di pgAdmin, klik kanan pada database "cloudy_project" (di sidebar kiri)
+2. Pilih "Query Tool"
+3. Buka file: SETUP-SCHEMA.sql
+4. Copy-paste isi file tersebut ke Query Tool
+5. Klik tombol "Execute" (atau tekan F5)
+6. Pastikan tidak ada error
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 4: TEST KONEKSI
+═══════════════════════════════════════════════════════════════
+
+Di PowerShell, jalankan:
+
+    php artisan migrate:status
+
+Jika berhasil, lanjut ke Langkah 5.
+Jika masih error, pastikan Langkah 2 dan 3 sudah selesai.
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 5: MIGRATE DATABASE
+═══════════════════════════════════════════════════════════════
+
+Di PowerShell, jalankan:
+
+    php artisan migrate
+
+Pastikan tidak ada error.
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 6: SEED DATABASE (BUAT USER ADMIN)
+═══════════════════════════════════════════════════════════════
+
+Di PowerShell, jalankan:
+
+    php artisan db:seed --class=AdminUserSeeder
+
+Pastikan tidak ada error.
+
+═══════════════════════════════════════════════════════════════
+LANGKAH 7: TEST APLIKASI
+═══════════════════════════════════════════════════════════════
+
+Di PowerShell, jalankan:
+
+    php artisan serve
+
+Buka browser: http://127.0.0.1:8000
+
+Login dengan:
+    Email: admin@cloudywear.test
+    Password: password123
+
+═══════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+
+ERROR: User already exists
+→ Skip langkah buat user, lanjutkan ke langkah berikutnya
+
+ERROR: Database already exists
+→ Hapus database lama di pgAdmin, atau gunakan database yang sudah ada
+
+ERROR: Permission denied
+→ Pastikan Langkah 3 (Setup Schema) sudah dijalankan
+
+ERROR: Connection refused
+→ PostgreSQL service tidak berjalan, start service dulu
+
+ERROR: Password authentication failed
+→ Pastikan Langkah 2 sudah selesai (user cloudy_user sudah dibuat)
+
+═══════════════════════════════════════════════════════════════
+FILE YANG SUDAH DIPERBARUI
+═══════════════════════════════════════════════════════════════
+
+✓ .env sudah diperbarui ke:
+  DB_USERNAME=cloudy_user
+  DB_PASSWORD=cloudy123
+  DB_DATABASE=cloudy_project
+
+✓ Config cache sudah di-clear
+
+═══════════════════════════════════════════════════════════════
+SCRIPT SQL YANG TERSEDIA
+═══════════════════════════════════════════════════════════════
+
+1. FIX-DATABASE-NOW.sql    → Buat user dan database
+2. SETUP-SCHEMA.sql        → Setup schema privileges
+
+═══════════════════════════════════════════════════════════════
+
+
