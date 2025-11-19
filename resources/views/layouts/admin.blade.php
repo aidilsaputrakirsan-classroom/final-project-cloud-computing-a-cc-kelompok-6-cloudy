@@ -164,7 +164,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link {{ request()->is('admin/pemesanan*') ? 'active' : '' }}" href="/admin/pemesanan">
                             <i class="bi bi-cart"></i><span>Pesanan</span>
                         </a>
                     </li>

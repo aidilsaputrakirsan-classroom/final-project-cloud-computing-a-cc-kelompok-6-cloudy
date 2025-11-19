@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PemesananController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');
+    Route::get('/admin', fn () => redirect('/admin/pemesanan'))->name('admin.index');
     
     // Categories routes
     Route::resource('categories', CategoryController::class);
@@ -37,6 +39,14 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::post('/', [ProductController::class, 'store'])->name('store');
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
+    });
+
+    //Pemesanan routes
+    Route::prefix('admin/pemesanan')->name('admin.pemesanan.')->group(function () {
+        Route::get('/', [PemesananController::class, 'index'])->name('index');
+        Route::post('/', [PemesananController::class, 'store'])->name('store');
+        Route::put('/{id}', [PemesananController::class, 'update'])->name('update');
+        Route::delete('/{id}', [PemesananController::class, 'destroy'])->name('destroy');
     });
 });
 
