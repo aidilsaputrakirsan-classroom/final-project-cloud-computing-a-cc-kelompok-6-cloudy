@@ -13,12 +13,12 @@ class CategoryController extends Controller
     public function index(): View
     {
         $categories = Category::orderBy('name')->paginate(10);
-        return view('categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function create(): View
     {
-        return view('categories.create');
+        return view('admin.categories.create');
     }
 
     public function store(Request $request): RedirectResponse
@@ -34,12 +34,12 @@ class CategoryController extends Controller
 
         Category::create($data);
 
-        return redirect()->route('categories.index')->with('success','Category created.');
+        return redirect()->route('admin.categories.index')->with('success','Category created.');
     }
 
     public function edit(Category $category): View
     {
-        return view('categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category): RedirectResponse
@@ -55,7 +55,7 @@ class CategoryController extends Controller
 
         $category->update($data);
 
-        return redirect()->route('categories.index')->with('success','Category updated.');
+        return redirect()->route('admin.categories.index')->with('success','Category updated.');
     }
 
     public function destroy(Category $category): RedirectResponse
