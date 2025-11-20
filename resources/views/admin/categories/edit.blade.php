@@ -56,20 +56,6 @@
                     @enderror
                 </div>
 
-                {{-- Deskripsi --}}
-                <div class="mb-3">
-                    <label class="form-label">Deskripsi</label>
-                    <textarea 
-                        name="description"
-                        rows="4"
-                        class="form-control"
-                    >{{ old('description', $category->description) }}</textarea>
-
-                    @error('description')
-                        <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 {{-- Checkbox --}}
                 <div class="mb-3 form-check">
                     <input 
