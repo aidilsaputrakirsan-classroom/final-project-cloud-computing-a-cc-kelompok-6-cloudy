@@ -89,7 +89,7 @@
                         <i class="bi bi-save me-2"></i>Update
                     </button>
                     <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary-custom">
-                        <i class="bi bi-arrow-left me-2"></i>Kembali
+                        <i class="bi bi-x-circle me-2"></i>Batal
                     </a>
                 </div>
 

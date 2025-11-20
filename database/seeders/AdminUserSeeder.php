@@ -3,19 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
+        $user = User::updateOrCreate(
             ['email' => 'admin@cloudywear.test'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password123'),
+                'password' => 'password123', // Biarkan cast 'hashed' yang menangani hashing
                 'role' => 'admin',
                 'email_verified_at' => now(),
             ]
