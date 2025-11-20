@@ -5,14 +5,15 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\UserCatalogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
         if (auth()->user()->role === 'admin') {
-            return redirect('/admin');
+            return redirect()->route('admin.index');
         }
-        return redirect('/dashboard');
+        return redirect()->route('user.catalog');
     }
     return redirect('/login');
 });
@@ -24,11 +25,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // User Catalog routes
+    Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
 });
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');
-    Route::get('/admin', fn () => redirect('/admin/pemesanan'))->name('admin.index');
     
     // Categories routes
     Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
