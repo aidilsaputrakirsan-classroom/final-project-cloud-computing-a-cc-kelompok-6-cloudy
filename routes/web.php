@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\UserCatalogController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User Catalog routes
     Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
 });
+
+    // Halaman form pesanan
+    Route::get('/order/{id}', [OrderController::class, 'create'])->name('order.create');
+
+    // Simpan pesanan
+    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');

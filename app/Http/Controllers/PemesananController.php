@@ -2,38 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
-Class PemesananController extends Controller
+class PemesananController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $searchKeyword = trim((string) $request->query('q', ''));
+        $orders = Order::with('product')->latest()->get();
+        $categories = Category::all();
+        $products = Product::all(); 
 
-        $products = Product::with('category')
-            ->when($searchKeyword !== '', function ($query) use ($searchKeyword) {
-                $like = '%' . $searchKeyword . '%';
-                // Use ILIKE for PostgreSQL case-insensitive search
-                $query->where(function ($subQuery) use ($like) {
-                    $subQuery->where('name', 'ILIKE', $like)
-                        ->orWhere('description', 'ILIKE', $like);
-                })
-                ->orWhereHas('category', function ($catQuery) use ($like) {
-                    $catQuery->where('name', 'ILIKE', $like);
-                });
-            })
-            ->orderBy('name')
-            ->get();
+        return view('admin.pemesanan.index', compact('orders', 'categories', 'products'));
+    }
 
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
-        
-        return view('admin.pemesanan.index', [
-            'products' => $products,
-            'categories' => $categories,
-            'q' => $searchKeyword,
+    public function update(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        $order->update([
+            'status' => $request->status
         ]);
+
+        return back()->with('success', 'Status pesanan berhasil diperbarui!');
+    }
+
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return back()->with('success', 'Pesanan berhasil dihapus!');
     }
 }

@@ -55,7 +55,7 @@
                     <div class="relative block">
                         <input 
                             type="text" 
-                            placeholder="Yuk, cari style kamu..." 
+                            placeholder="Yuk, cari fashion kamu..." 
                             class="border border-gray-300 rounded-full px-4 py-2 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]"
                             id="searchInput"
                             value="{{ request('search') }}">
@@ -173,10 +173,11 @@
                                         </span>
                                     </span>
 
-                                    @if($product->stock > 0)
-                                        <button class="bg-[#0E5DA5] text-white px-4 py-2 rounded-md hover:bg-[#0c508f] text-sm">
+                                    @if($product->stock > 0)                                     
+                                        <a href="{{ route('order.create', $product->id) }}" 
+                                            class="bg-[#0E5DA5] text-white px-4 py-2 rounded-md hover:bg-[#0c508f] text-sm">
                                             Pesan Sekarang
-                                        </button>
+                                        </a>
 
                                     @else
                                         <button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-md text-sm">
