@@ -89,7 +89,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
                     <h1 class="h3 mb-1"><i class="bi bi-box-seam me-2"></i>Manajemen Produk</h1>
-                    <p class="text-muted mb-0">Kelola produk Anda</p>
+                    <p class="text-muted mb-0">Kelola produk Anda dengan mudah</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <form method="GET" action="{{ route('admin.products.index') }}" class="d-flex" role="search">

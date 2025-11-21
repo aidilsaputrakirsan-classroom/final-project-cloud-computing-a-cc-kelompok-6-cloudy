@@ -159,40 +159,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        @php
-                            $productMenuActive = request()->is('admin/products*') || request()->is('admin/categories*');
-                        @endphp
-
-                        <a class="nav-link {{ $productMenuActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#menuProduk">
-                            <i class="bi bi-box-seam"></i>
-                            <span>Manajemen Produk</span>
-                            <i class="bi bi-chevron-down ms-auto"></i>
+                        <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" href="/admin/products">
+                            <i class="bi bi-box-seam"></i><span>Produk</span>
                         </a>
-
-                        <div id="menuProduk" class="collapse {{ $productMenuActive ? 'show' : '' }}">
-                            <ul class="nav flex-column ms-4">
-
-                                <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" 
-                                    href="/admin/products">
-                                        <i class="bi bi-bag"></i>
-                                        <span>Produk</span>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" 
-                                    href="/admin/categories">
-                                        <i class="bi bi-tags"></i>
-                                        <span>Kategori</span>
-                                    </a>
-                                </li>
-        </ul>
-    </div>
-</li>
-
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/pemesanan*') ? 'active' : '' }}" href="/admin/pemesanan">
+                        <a class="nav-link" href="#">
                             <i class="bi bi-cart"></i><span>Pesanan</span>
                         </a>
                     </li>
