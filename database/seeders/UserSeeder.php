@@ -5,18 +5,19 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 
-class AdminUserSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     public function run(): void
     {
         $user = User::updateOrCreate(
-            ['email' => 'admin@cloudywear.test'],
+            ['email' => 'user@cloudywear.test'],
             [
-                'name' => 'Admin',
+                'name' => 'User',
                 'password' => 'password123', // Biarkan cast 'hashed' yang menangani hashing
-                'role' => 'admin',
+                'role' => 'user',
                 'email_verified_at' => now(),
             ]
         );
     }
 }
+

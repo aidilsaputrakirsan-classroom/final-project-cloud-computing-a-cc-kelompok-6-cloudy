@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Produk')
+@section('title', 'Manajemen Pemesanan Produk')
 
 @push('styles')
 <style>
@@ -88,8 +88,8 @@
         <div class="page-header">
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <div>
-                    <h1 class="h3 mb-1"><i class="bi bi-box-seam me-2"></i>Manajemen Produk</h1>
-                    <p class="text-muted mb-0">Kelola produk Anda</p>
+                    <h1 class="h3 mb-1"><i class="bi bi-box-seam me-2"></i>Manajemen Pemesanan Produk</h1>
+                    <p class="text-muted mb-0">Kelola pemesanan produk</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <form method="GET" action="{{ route('admin.products.index') }}" class="d-flex" role="search">
@@ -101,9 +101,6 @@
                             @endif
                         </div>
                     </form>
-                    <button class="btn btn-primary btn-tambah" data-bs-toggle="modal" data-bs-target="#modalProduk">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Produk
-                    </button>
                 </div>
             </div>
         </div>
@@ -116,75 +113,115 @@
                 <thead>
                     <tr>
                         <th style="width: 5%">No</th>
-                        <th style="width: 12%">Gambar</th>
-                        <th style="width: 15%">Nama Produk</th>
-                        <th style="width: 12%">Kategori</th>
-                        <th style="width: 18%">Deskripsi</th>
-                        <th style="width: 12%">Harga</th>
-                        <th style="width: 10%">Stok</th>
-                        <th style="width: 16%">Aksi</th>
+                        <th style="width: 12%">Kode Order</th>
+                        <th style="width: 18%">Customer</th>
+                        <th style="width: 25%">Produk</th>
+                        <th style="width: 12%">Total</th>
+                        <th style="width: 15%">Status</th>
+                        <th style="width: 13%">Aksi</th>
                     </tr>
                 </thead>
+
+                @php
+                $products = $products ?? collect();
+                $categories = $categories ?? collect();
+
+                $needsDummy = !isset($orders) || (is_countable($orders) && count($orders) === 0) || (is_object($orders) && method_exists($orders,'isEmpty') && $orders->isEmpty());
+                if ($needsDummy) {
+                    $orders = collect([
+                        (object)[
+                            'id' => 1,
+                            'order_code' => 'DUMMY-001',
+                            'customer' => (object)['name' => 'John Sample'],
+                            'items' => collect([
+                                (object)['product' => (object)['name' => 'Produk Contoh A'], 'qty' => 2],
+                                (object)['product' => (object)['name' => 'Produk Contoh B'], 'qty' => 1],
+                            ]),
+                            'total' => 125000,
+                            'status' => 'pending',
+                        ],
+                        (object)[
+                            'id' => 2,
+                            'order_code' => 'DUMMY-002',
+                            'customer' => (object)['name' => 'Jane Example'],
+                            'items' => collect([
+                                (object)['product' => (object)['name' => 'Produk Demo C'], 'qty' => 1],
+                            ]),
+                            'total' => 75000,
+                            'status' => 'processing',
+                        ],
+                    ]);
+                }
+                @endphp
                 <tbody>
-                    @forelse($products as $index => $product)
+                    @forelse($orders as $index => $order)
                     <tr>
                         <td>{{ $index + 1 }}</td>
+
+                        <td><strong>#{{ $order->order_code }}</strong></td>
+
+                        <td>{{ $order->customer->name ?? 'Tidak diketahui' }}</td>
+
                         <td>
-                            @php
-                                $placeholder = 'https://via.placeholder.com/80x80?text=Produk';
-                            @endphp
-                            @if($product->image)
-                                @if(str_starts_with($product->image, 'http'))
-                                    <img src="{{ $product->image }}" alt="Produk" class="product-img">
-                                @else
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Produk" class="product-img">
-                                @endif
-                            @else
-                                <img src="{{ $placeholder }}" alt="Produk" class="product-img">
-                            @endif
+                            @foreach($order->items as $item)
+                                <div>{{ $item->product->name }} ({{ $item->qty }})</div>
+                            @endforeach
                         </td>
-                        <td><strong>{{ $product->name }}</strong></td>
+
+                        <td><strong class="text-success">Rp {{ number_format($order->total, 0, ',', '.') }}</strong></td>
+
                         <td>
-                            @if($product->category)
-                                <span class="badge bg-primary">{{ $product->category->name }}</span>
-                            @else
-                                <span class="badge bg-secondary">Tidak ada kategori</span>
-                            @endif
+                            <form action="" method="POST">
+                                @csrf
+                                @method('PUT')
+
+                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>
+                                        Pending
+                                    </option>
+                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>
+                                        Diproses
+                                    </option>
+                                    <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>
+                                        Dikirim
+                                    </option>
+                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>
+                                        Selesai
+                                    </option>
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
+                                        Dibatalkan
+                                    </option>
+                                </select>
+                            </form>
                         </td>
-                        <td><small>{{ $product->description }}</small></td>
-                        <td><strong class="text-success">Rp {{ number_format($product->price, 0, ',', '.') }}</strong></td>
+
                         <td>
-                            @if($product->stock > 20)
-                                <span class="badge badge-stok badge-stok-tersedia">Tersedia ({{ $product->stock }})</span>
-                            @elseif($product->stock > 0)
-                                <span class="badge badge-stok badge-stok-sedikit">Sedikit ({{ $product->stock }})</span>
-                            @else
-                                <span class="badge badge-stok badge-stok-habis">Habis ({{ $product->stock }})</span>
-                            @endif
-                        </td>
-                        <td>
-                            <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#modalEditProduk{{ $product->id }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <form id="delete-form-{{ $product->id }}" action="{{ route('admin.products.destroy', $product->id) }}" method="POST" style="display: inline;">
+                            <a href="" class="btn btn-action btn-edit">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            <form id="delete-order-{{ $order->id }}" action="" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $product->id }}, '{{ $product->name }}')">
+
+                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $order->id }}, '#{{ $order->order_code }}')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
                         </td>
                     </tr>
+
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
-                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ddd;"></i>
-                            <p class="text-muted mt-2">Belum ada produk. Silakan tambah produk baru!</p>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">Belum ada order.</p>
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
@@ -201,7 +238,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -256,7 +293,7 @@
                     <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Produk</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
