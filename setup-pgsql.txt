@@ -1,0 +1,40 @@
+SETUP POSTGRESQL UNTUK PROYEK CLOUDY
+=======================================
+
+Cara Setup PostgreSQL:
+
+1. Buka file .env di root project
+2. Update bagian database seperti berikut:
+
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=cloudy_project
+DB_USERNAME=postgres
+DB_PASSWORD=MASUKKAN_PASSWORD_ANDA_DISINI
+
+3. Jika masih error, coba ganti username:
+   - Jika di pgAdmin username = cloudy_project, ganti:
+   DB_USERNAME=cloudy_project
+   DB_PASSWORD=MASUKKAN_PASSWORD
+
+4. Setelah update .env, jalankan:
+   php artisan migrate
+   php artisan db:seed --class=ProductSeeder
+
+5. Jika tabel products sudah ada di pgAdmin:
+   - Hapus tabel products yang lama
+   - Atau backup dulu
+   - Jalankan migrate lagi
+
+ALTERNATIF - Buat Query SQL Langsung di pgAdmin:
+==========================================
+
+Jika sudah ada tabel products di pgAdmin, tapi belum ada kolom 'image',
+jalankan query berikut di pgAdmin:
+
+ALTER TABLE products ADD COLUMN IF NOT EXISTS image VARCHAR(255) NULL;
+
+Setelah itu test aplikasinya!
+
+
