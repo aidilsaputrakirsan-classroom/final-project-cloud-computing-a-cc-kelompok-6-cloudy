@@ -60,7 +60,7 @@
                             <th style="width: 5%">No</th>
                             <th style="width: 25%">Nama Kategori</th>
                             <th style="width: 25%">Slug</th>
-                            <th style="width: 15%">Deskripsi</th>
+                            <th style="width: 15%">Status</th>
                             <th style="width: 20%">Aksi</th>
                         </tr>
                     </thead>

@@ -2,38 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
 class PemesananController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('product')->latest()->get();
-        $categories = Category::all();
-        $products = Product::all(); 
+        $q = $request->q; // konsisten dengan controller lain
 
-        return view('admin.pemesanan.index', compact('orders', 'categories', 'products'));
-    }
+        $query = Order::with('product.category');
 
-    public function update(Request $request, $id)
-    {
-        $order = Order::findOrFail($id);
+        // Filter kategori
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->whereHas('product', function($p) use ($q) {
+                    $p->where('name', 'LIKE', "%{$q}%")
+                      ->orWhereHas('category', function($c) use ($q) {
+                          $c->where('name', 'ILIKE', "%{$q}%");
+                      });
+                });
+            });
+        }
 
-        $order->update([
-            'status' => $request->status
-        ]);
+        // Pagination + tetap bawa parameter
+        $orders = $query->latest()->paginate(10)->appends(request()->query());
+        $categories = Category::all(); // optional, kalau mau dropdown filter kategori
 
-        return back()->with('success', 'Status pesanan berhasil diperbarui!');
-    }
-
-    public function destroy($id)
-    {
-        $order = Order::findOrFail($id);
-        $order->delete();
-
-        return back()->with('success', 'Pesanan berhasil dihapus!');
+        return view('admin.pemesanan.index', compact('orders', 'categories', 'q'));
     }
 }

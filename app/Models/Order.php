@@ -10,7 +10,8 @@ class Order extends Model
         'product_id',
         'quantity',
         'total',
-        'proof'
+        'proof',
+        'status',
     ];
 
     public function product()

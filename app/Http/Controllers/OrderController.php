@@ -12,7 +12,6 @@ class OrderController extends Controller
     public function create($id)
     {
         $product = Product::findOrFail($id);
-
         return view('user.order.form', compact('product'));
     }
 
@@ -27,6 +26,11 @@ class OrderController extends Controller
 
         $product = Product::findOrFail($request->product_id);
 
+        // Cek stok
+        if ($request->quantity > $product->stock) {
+            return back()->with('error', 'Stok produk tidak cukup. Tersedia: ' . $product->stock);
+        }
+
         // Hitung total langsung dari server!
         $total = $product->price * $request->quantity;
 
@@ -39,6 +43,10 @@ class OrderController extends Controller
             'total'      => $total,
             'proof'      => $proofPath,
         ]);
+
+        // Kurangi stok
+        $product->stock -= $request->quantity;
+        $product->save();
 
         return back()->with('success', 'Terima kasih, pesanan Anda sedang kami proses.');
     }
