@@ -28,7 +28,7 @@
     .badge-stok { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
     .badge-stok-tersedia { background-color: #d1f2d4; color: #006d0d; }
     .badge-stok-habis { background-color: #f8c1c1; color: #d63031; }
-    .badge-stok-sedikit { background-color: #ffeaa7; color: #fdcb6e; }
+    .badge-stok-sedikit { background-color: #ffeaa7; color: #fcb736; }
     .bg-pink { background-color: #ff69b4 !important; color: white; }
     .form-select { max-width: 250px; border-radius: 8px; }
     .toast-container { min-width: 350px; max-width: 400px; z-index: 9999; }
@@ -37,6 +37,9 @@
     .toast-error .toast-header { background-color: #dc3545; color: white; }
     .toast-warning .toast-header { background-color: #ffc107; color: white; }
     .toast-body { background-color: white; padding: 0.75rem; }
+    .pagination .page-link { color: #0E5DA5; background-color: #ffffff; border-color: #0E5DA5; }
+    .pagination .page-link:hover { background-color: #1067b8; border-color: #0E5DA5; color: #fff; }
+    .pagination .page-item.active .page-link { background-color: #0E5DA5; border-color: #0E5DA5; color: #fff; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @media (max-width: 768px) { .table-responsive { overflow-x: auto; } .page-header { text-align: center; } .btn-tambah { width: 100%; margin-bottom: 1rem; } .nav-tabs .nav-link { padding: 0.5rem 0.75rem; font-size: 0.875rem; } .product-img { width: 60px; height: 60px; } .toast-container { min-width: 300px; max-width: 90%; right: 10px; } }
 </style>
@@ -108,8 +111,8 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="card shadow-sm border-0 rounded-3">
+<div class="card">
+    <div class="card shadow-sm border-0 rounded-3">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
@@ -128,7 +131,7 @@
                 <tbody>
                     @forelse($products as $index => $product)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                    <td>{{ $products->firstItem() + $index }}</td>
                         <td>
                             @php
                                 $placeholder = 'https://via.placeholder.com/80x80?text=Produk';
@@ -185,6 +188,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="mt-3 px-3">
+                {{ $products->links() }}
+            </div>
         </div>
     </div>
 </div>

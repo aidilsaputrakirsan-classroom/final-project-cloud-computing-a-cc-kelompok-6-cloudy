@@ -37,6 +37,9 @@
     .toast-error .toast-header { background-color: #dc3545; color: white; }
     .toast-warning .toast-header { background-color: #ffc107; color: white; }
     .toast-body { background-color: white; padding: 0.75rem; }
+    .pagination .page-link { color: #0E5DA5; background-color: #ffffff; border-color: #0E5DA5; }
+    .pagination .page-link:hover { background-color: #1067b8; border-color: #0E5DA5; color: #fff; }
+    .pagination .page-item.active .page-link { background-color: #0E5DA5; border-color: #0E5DA5; color: #fff; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @media (max-width: 768px) { .table-responsive { overflow-x: auto; } .page-header { text-align: center; } .btn-tambah { width: 100%; margin-bottom: 1rem; } .nav-tabs .nav-link { padding: 0.5rem 0.75rem; font-size: 0.875rem; } .product-img { width: 60px; height: 60px; } .toast-container { min-width: 300px; max-width: 90%; right: 10px; } }
 </style>
@@ -92,96 +95,96 @@
                     <p class="text-muted mb-0">Kelola pemesanan produk</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <form method="GET" action="{{ route('admin.products.index') }}" class="d-flex" role="search">
+                    <form method="GET" action="{{ route('admin.pemesanan.index') }}" class="d-flex" role="search">
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                            <input type="text" name="q" value="{{ request('q', $q ?? '') }}" class="form-control" placeholder="Cari produk atau kategori..." />
+                            <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari produk atau kategori..." />
                             @if(request('q'))
-                                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Reset</a>
+                                <a href="{{ route('admin.pemesanan.index') }}" class="btn btn-outline-secondary">Reset</a>
                             @endif
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
         <div class="card">
             <div class="card shadow-sm border-0 rounded-3">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th style="width: 5%">No</th>
-                        <th style="width: 10%">Kategori</th>
-                        <th style="width: 35%">Nama Produk</th>
-                        <th style="width: 5%">Qty</th>
-                        <th style="width: 12%">Total</th>
-                        <th style="width: 8%">Bukti</th>
-                        <th style="width: 15%">Status</th>
-                        <th style="width: 15%">Aksi</th>
-                    </tr>
-                </thead>
-
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 10%">Kategori</th>
+                                    <th style="width: 30%">Nama Produk</th>
+                                    <th style="width: 5%">Qty</th>
+                                    <th style="width: 10%">Total</th>
+                                    <th style="width: 15%">Bukti Pembayaran</th>
+                                    <th style="width: 15%">Status</th>
+                                    <th style="width: 15%">Aksi</th>
+                                </tr>
+                            </thead>
                 <tbody>
-    @forelse ($orders as $o)
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $o->product->category->name ?? '-' }}</td>
-        <td>
-            <div style="display: flex; align-items: center; gap: 10px;">
-            @if($o->product->image)
-                <img src="{{ asset('storage/' . $o->product->image) }}" alt="Produk" style="width: 50px; height: 50px; object-fit: cover;">
-            @endif
-            <span>{{ $o->product->name }}</span>
-            </div>
-        </td>
-        <td>{{ $o->quantity }}</td>
-        <td>Rp {{ number_format($o->total, 0, ',', '.') }}</td>
-        <td>
-            @if($o->proof)
-            <a href="{{ asset('storage/' . $o->proof) }}" target="_blank">Lihat</a>
-            @else
-            -
-            @endif
-        </td>
-        <td>
-            <form action="{{ route('admin.pemesanan.update', $o->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                    <option value="pending" {{ $o->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                    <option value="processing" {{ $o->status == 'processing' ? 'selected' : '' }}>Diproses</option>
-                    <option value="shipping" {{ $o->status == 'shipping' ? 'selected' : '' }}>Dikirim</option>
-                    <option value="completed" {{ $o->status == 'completed' ? 'selected' : '' }}>Selesai</option>
-                    <option value="cancelled" {{ $o->status == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
-                </select>
-            </form>
-        </td>
-        <td>
-            <a href="{{ route('admin.pemesanan.index', $o->id) }}" class="btn btn-action btn-edit">
-                <i class="bi bi-eye"></i>
-            </a>
-            <form id="delete-order-{{ $o->id }}" action="{{ route('admin.pemesanan.destroy', $o->id) }}" method="POST" class="d-inline">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $o->id }}, '{{ $o->product->name }}')">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </form>
-        </td>
-    </tr>
-    @empty
-    <tr>
-        <td colspan="7" class="text-center py-4">
-            <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-            <p class="text-muted mt-2">Belum ada order.</p>
-        </td>
-    </tr>
-    @endforelse
-</tbody>
-
+                    @forelse ($orders as $o)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $o->product->category->name ?? '-' }}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                            @if($o->product->image)
+                                <img src="{{ asset('storage/' . $o->product->image) }}" alt="Produk" style="width: 50px; height: 50px; object-fit: cover;">
+                            @endif
+                            <span>{{ $o->product->name }}</span>
+                            </div>
+                        </td>
+                        <td>{{ $o->quantity }}</td>
+                        <td>Rp {{ number_format($o->total, 0, ',', '.') }}</td>
+                        <td>
+                            @if($o->proof)
+                            <a href="{{ asset('storage/' . $o->proof) }}" target="_blank">Lihat</a>
+                            @else
+                            -
+                            @endif
+                        </td>
+                        <td>
+                            <form action="{{ route('admin.pemesanan.update', $o->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="pending" {{ $o->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="processing" {{ $o->status == 'processing' ? 'selected' : '' }}>Diproses</option>
+                                    <option value="shipping" {{ $o->status == 'shipping' ? 'selected' : '' }}>Dikirim</option>
+                                    <option value="completed" {{ $o->status == 'completed' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="cancelled" {{ $o->status == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.pemesanan.index', $o->id) }}" class="btn btn-action btn-edit">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <form id="delete-order-{{ $o->id }}" action="{{ route('admin.pemesanan.destroy', $o->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $o->id }}, '{{ $o->product->name }}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                            <p class="text-muted mt-2">Belum ada order.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
             </table>
+            <div class="mt-3 px-3">
+                {{ $orders->appends(['q' => request('q')])->links() }}
+            </div>
         </div>
     </div>
 </div>

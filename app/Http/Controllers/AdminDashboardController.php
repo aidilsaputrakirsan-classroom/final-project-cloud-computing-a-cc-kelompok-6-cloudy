@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Order; // ✅ tambahkan ini
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
         $totalProducts = Product::count();
-        $totalValue = Product::query()
-            ->selectRaw('COALESCE(SUM(price * stock), 0) as total')
-            ->value('total');
+
+        // ✅ hitung total pendapatan dari pemesanan
+        $totalValue = Order::where('status', 'completed')->sum('total');
 
         return view('admin.dashboard', [
             'totalProducts' => $totalProducts,
@@ -19,5 +20,3 @@ class AdminDashboardController extends Controller
         ]);
     }
 }
-
-
