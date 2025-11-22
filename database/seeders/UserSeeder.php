@@ -4,20 +4,20 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::updateOrCreate(
+        User::updateOrCreate(
             ['email' => 'user@cloudywear.test'],
             [
                 'name' => 'User',
-                'password' => 'password123', // Biarkan cast 'hashed' yang menangani hashing
+                'password' => Hash::make('password123'), // HARUS HASH!
                 'role' => 'user',
                 'email_verified_at' => now(),
             ]
         );
     }
 }
-

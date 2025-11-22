@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\UserCatalogController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,7 +20,11 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+// ============================
+// USER ROUTES
+// ============================
 Route::middleware(['auth', 'verified'])->group(function () {
+
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Profile routes
@@ -27,20 +32,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // User Catalog routes
+    // User Catalog (Existing)
     Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
+
+    // ============================
+    // 🚀 Tambahan Baru: User Product Detail
+    // ============================
+    Route::get('/user/product/{id}', [UserProductController::class, 'detail'])
+        ->name('user.product.detail');
 });
 
-    // Halaman form pesanan
-    Route::get('/order/{id}', [OrderController::class, 'create'])->name('order.create');
+// Order Routes
+Route::get('/order/{id}', [OrderController::class, 'create'])->name('order.create');
+Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
 
-    // Simpan pesanan
-    Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
-
+// ============================
+// ADMIN ROUTES
+// ============================
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');
     
-    // Categories routes
+    // Categories
     Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::get('/create', [CategoryController::class, 'create'])->name('create');
@@ -50,8 +63,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
     });
 
-    
-    // Products routes
+    // Products
     Route::prefix('admin/products')->name('admin.products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::post('/', [ProductController::class, 'store'])->name('store');
@@ -59,7 +71,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
     });
 
-    //Pemesanan routes
+    // Pemesanan
     Route::prefix('admin/pemesanan')->name('admin.pemesanan.')->group(function () {
         Route::get('/', [PemesananController::class, 'index'])->name('index');
         Route::post('/', [PemesananController::class, 'store'])->name('store');
