@@ -28,7 +28,7 @@
     .badge-stok { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
     .badge-stok-tersedia { background-color: #d1f2d4; color: #006d0d; }
     .badge-stok-habis { background-color: #f8c1c1; color: #d63031; }
-    .badge-stok-sedikit { background-color: #ffeaa7; color: #fcb736; }
+    .badge-stok-sedikit { background-color: #fae7a9; color: #edb202; }
     .bg-pink { background-color: #ff69b4 !important; color: white; }
     .form-select { max-width: 250px; border-radius: 8px; }
     .toast-container { min-width: 350px; max-width: 400px; z-index: 9999; }
