@@ -38,7 +38,7 @@ class PemesananController extends Controller
     {
         // Validasi request (misal status wajib ada)
         $request->validate([
-            'status' => 'required|string|in:pending,completed,cancelled',
+            'status' => 'required|string|in:pending,processing,shipping,completed,cancelled',
         ]);
 
         $order = Order::findOrFail($id);
