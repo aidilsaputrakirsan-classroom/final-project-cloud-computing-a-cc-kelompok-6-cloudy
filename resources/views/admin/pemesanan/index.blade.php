@@ -26,9 +26,6 @@
     .form-control, .form-select { border-radius: 8px; border: 1px solid #dee2e6; padding: 0.75rem; transition: all 0.3s; }
     .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
     .badge-stok { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
-    .badge-stok-tersedia { background-color: #d1f2d4; color: #006d0d; }
-    .badge-stok-habis { background-color: #f8c1c1; color: #d63031; }
-    .badge-stok-sedikit { background-color: #ffeaa7; color: #fdcb6e; }
     .bg-pink { background-color: #ff69b4 !important; color: white; }
     .form-select { max-width: 250px; border-radius: 8px; }
     .toast-container { min-width: 350px; max-width: 400px; z-index: 9999; }

@@ -110,7 +110,7 @@
             margin-left: 200px;
             width: calc(100% - 200px);
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1.5rem;
             transition: all 0.3s ease-in-out;
         }
 
@@ -134,6 +134,67 @@
             .main-content-wrapper.expanded {
                 width: 100%;
             }
+        }
+                /* Icon toggle */
+        body.dark-mode label i.bi-sun-fill {
+            display: inline;
+        }
+        body.dark-mode label i.bi-moon-fill {
+            display: none;
+        }
+        label i.bi-sun-fill {
+            display: none;
+        }
+
+        /* Tombol switch */
+        .form-check-input:checked {
+            background-color: #0E5DA5;
+            border-color: #0E5DA5;
+        }
+        .form-check-input {
+            transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Base */
+        body.dark-mode {
+            background-color: #121212 !important;
+            color: #e0e0e0 !important;
+        }
+
+        body.dark-mode .main-content-wrapper {
+            background-color: #1e1e1e;
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .dropdown-menu,
+        body.dark-mode .sidebar,
+        body.dark-mode .table,
+        body.dark-mode .modal-content {
+            background-color: #1e1e1e !important;
+            color: #e0e0e0 !important;
+            border-color: #333 !important;
+        }
+
+        body.dark-mode .nav-link.active,
+        body.dark-mode .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.dark-mode .btn-light {
+            background-color: #333 !important;
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode .btn-light:hover {
+            background-color: #444 !important;
+        }
+
+        body.dark-mode .sidebar {
+            background: linear-gradient(135deg, #0a3a66 35%, #1e1e1e 100%) !important;
+        }
+
+        body.dark-mode table th,
+        body.dark-mode table td {
+            border-color: #333 !important;
         }
     </style>
 
@@ -168,7 +229,6 @@
                             <span>Manajemen Produk</span>
                             <i class="bi bi-chevron-down ms-auto"></i>
                         </a>
-
                         <div id="menuProduk" class="collapse {{ $productMenuActive ? 'show' : '' }}">
                             <ul class="nav flex-column ms-4">
 
@@ -179,7 +239,6 @@
                                         <span>Produk</span>
                                     </a>
                                 </li>
-
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" 
                                     href="/admin/categories">
@@ -190,7 +249,6 @@
         </ul>
     </div>
 </li>
-
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/pemesanan*') ? 'active' : '' }}" href="/admin/pemesanan">
                             <i class="bi bi-cart"></i><span>Pesanan</span>
@@ -209,6 +267,16 @@
                             @yield('page_header')
                         </div>
                         @auth
+                        <div class="d-flex align-items-center gap-2 ms-auto">
+                        <!-- Tombol Dark Mode -->
+                        <span id="darkModeLabel" style="font-weight:400;">Light Mode</span>
+                        <div class="form-check form-switch m-0 position-relative">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch" style="width:3rem; height:1.5rem;">
+                            <label class="form-check-label mb-0 d-flex align-items-center justify-content-between px-2" for="darkModeSwitch" style="width:3rem; cursor:pointer;">
+                                <i class="bi bi-sun-fill" style="color:#FFD700; font-size:1.3rem;"></i>
+                                <i class="bi bi-moon-fill" style="color:#f1f1f1; font-size:1.3rem;"></i>
+                            </label>
+                        </div>
                         <div class="dropdown ms-auto">
                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle me-2"></i> {{ auth()->user()->name }}
@@ -259,5 +327,46 @@
     </script>
 
     @stack('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkModeSwitch = document.getElementById('darkModeSwitch');
+        const body = document.body;
+        const sunIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-sun-fill');
+        const moonIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-moon-fill');
+        const modeLabel = document.getElementById('darkModeLabel');
+
+        // Set dark mode jika sudah di localStorage
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            if (darkModeSwitch) darkModeSwitch.checked = true;
+            if (sunIcon) sunIcon.style.display = 'none';
+            if (moonIcon) moonIcon.style.display = 'inline';
+            if (modeLabel) modeLabel.textContent = 'Dark Mode';
+        } else {
+            if (sunIcon) sunIcon.style.display = 'inline';
+            if (moonIcon) moonIcon.style.display = 'none';
+            if (modeLabel) modeLabel.textContent = 'Light Mode';
+        }
+
+        // Toggle switch
+        if (darkModeSwitch) {
+            darkModeSwitch.addEventListener('change', () => {
+                if (darkModeSwitch.checked) {
+                    body.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'inline';
+                    modeLabel.textContent = 'Dark Mode';
+                } else {
+                    body.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                    sunIcon.style.display = 'inline';
+                    moonIcon.style.display = 'none';
+                    modeLabel.textContent = 'Light Mode';
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>

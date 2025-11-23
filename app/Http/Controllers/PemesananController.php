@@ -33,4 +33,25 @@ class PemesananController extends Controller
 
         return view('admin.pemesanan.index', compact('orders', 'categories', 'q'));
     }
+    
+    public function update(Request $request, $id)
+    {
+        // Validasi request (misal status wajib ada)
+        $request->validate([
+            'status' => 'required|string|in:pending,completed,cancelled',
+        ]);
+
+        $order = Order::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Pesanan berhasil dihapus.');
+    }
 }
