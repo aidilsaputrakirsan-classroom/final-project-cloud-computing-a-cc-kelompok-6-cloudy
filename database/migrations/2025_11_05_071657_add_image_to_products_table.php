@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->string('image')->nullable();
+            // Tambahkan kolom hanya jika belum ada
+            if (!Schema::hasColumn('products', 'image')) {
+                $table->string('image')->nullable();
+            }
         });
     }
 
@@ -22,7 +25,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('image');
+            if (Schema::hasColumn('products', 'image')) {
+                $table->dropColumn('image');
+            }
         });
     }
 };
