@@ -7,17 +7,23 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\UserCatalogController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\UserProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    if (auth()->check()) {
-        if (auth()->user()->role === 'admin') {
-            return redirect()->route('admin.index');
-        }
-        return redirect()->route('user.catalog');
-    }
-    return redirect('/login');
+    // if (auth()->check()) {
+    //     if (auth()->user()->role === 'admin') {
+    //         return redirect()->route('dashboard');
+    //     } else {
+    //         return redirect()->route('user.catalog');
+    //     }
+    // }
+    return redirect()->route('user.catalog');
 });
+
+// User Catalog routes
+Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -27,16 +33,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // User Catalog routes
-    Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
-});
+    
+    // Tambahan Baru: User Product Detail
+    Route::get('/user/product/{id}', [UserProductController::class, 'detail'])
+        ->name('user.product.detail');
 
-    // Halaman form pesanan
+     // Halaman form pesanan
     Route::get('/order/{id}', [OrderController::class, 'create'])->name('order.create');
 
     // Simpan pesanan
     Route::post('/order/store', [OrderController::class, 'store'])->name('order.store');
 
+});
+
+   
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');
     

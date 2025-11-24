@@ -74,38 +74,38 @@
     </div>
 
     {{-- ================= WARNING STOCK LOW (PREMIUM) ================= --}}
-<div class="alert shadow-sm border-0 rounded-4 mb-4 p-3 d-flex justify-content-between align-items-center premium-alert">
-    <div class="d-flex align-items-start">
-        <div class="icon-warning me-3">
-            <i class="bi bi-exclamation-triangle-fill"></i>
+    <div class="alert shadow-sm border-0 rounded-4 mb-4 p-3 d-flex justify-content-between align-items-center premium-alert">
+        <div class="d-flex align-items-start">
+            <div class="icon-warning me-3">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1">Peringatan Stok Rendah</h6>
+                <p class="mb-0 text-muted">Beberapa produk memiliki stok kurang dari 5. Segera lakukan restock.</p>
+            </div>
         </div>
-        <div>
-            <h6 class="fw-bold mb-1">Peringatan Stok Rendah</h6>
-            <p class="mb-0 text-muted">Beberapa produk memiliki stok kurang dari 5. Segera lakukan restock.</p>
-        </div>
+
+        <a href="{{ route('admin.products.index') }}" class="btn premium-btn">
+            Lihat Produk <i class="bi bi-arrow-right ms-1"></i>
+        </a>
     </div>
 
-    <a href="{{ route('admin.products.index') }}" class="btn premium-btn">
-        Lihat Produk <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-</div>
+    {{-- ================= TRANSAKSI HARI INI ================= --}}
+    <div class="card shadow-sm border-0 rounded-4 premium-card">
 
-{{-- ================= TRANSAKSI HARI INI ================= --}}
-<div class="card shadow-sm border-0 rounded-4 premium-card">
-
-    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="fw-bold mb-0">🧾 Transaksi Penjualan Hari Ini</h5>
-            <small class="text-muted">Menampilkan beberapa transaksi penjualan perhari ini.</small>
+        <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold mb-0">🧾 Transaksi Penjualan Hari Ini</h5>
+                <small class="text-muted">Menampilkan beberapa transaksi penjualan perhari ini.</small>
+            </div>
+            <form method="GET" class="d-flex align-items-center gap-2" id="filterForm">
+                <input type="date"
+                    name="date"
+                    value="{{ request('date') }}"
+                    class="form-control form-control-sm calendar-filter"
+                    onchange="document.getElementById('filterForm').submit();">
+            </form>
         </div>
-        <form method="GET" class="d-flex align-items-center gap-2" id="filterForm">
-            <input type="date"
-                name="date"
-                value="{{ request('date') }}"
-                class="form-control form-control-sm calendar-filter"
-                onchange="document.getElementById('filterForm').submit();">
-        </form>
-    </div>
 
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0">

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard') - Cloudy</title>
+    <title>@yield('title', 'Admin Dashboard') - cloudywear</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -79,6 +80,8 @@
             align-items: center;
         }
 
+
+
         .nav-link i {
             font-size: 1.2rem;
         }
@@ -124,24 +127,30 @@
             .sidebar {
                 left: -200px;
             }
+
             .sidebar.active {
                 left: 0;
             }
+
             .main-content-wrapper {
                 margin-left: 0;
                 width: 100%;
             }
+
             .main-content-wrapper.expanded {
                 width: 100%;
             }
         }
-                /* Icon toggle */
+
+        /* Icon toggle */
         body.dark-mode label i.bi-sun-fill {
             display: inline;
         }
+
         body.dark-mode label i.bi-moon-fill {
             display: none;
         }
+
         label i.bi-sun-fill {
             display: none;
         }
@@ -151,6 +160,7 @@
             background-color: #0E5DA5;
             border-color: #0E5DA5;
         }
+
         .form-check-input {
             transition: all 0.3s ease;
         }
@@ -180,13 +190,27 @@
             background-color: rgba(255, 255, 255, 0.1) !important;
         }
 
+        body.dark-mode .text-muted {
+            color: #a0a0a0 !important;
+        }
+
         body.dark-mode .btn-light {
             background-color: #333 !important;
             color: #e0e0e0 !important;
         }
+
         body.dark-mode .btn-light:hover {
             background-color: #444 !important;
         }
+
+        body.dark-mode .btn-primary-custom,
+        body.dark-mode .btn-tambah {
+            background-color: #0E5DA5 !important;
+            border-color: #0E5DA5 !important;
+            color: #fff !important;
+        }
+
+        ,
 
         body.dark-mode .sidebar {
             background: linear-gradient(135deg, #0a3a66 35%, #1e1e1e 100%) !important;
@@ -200,6 +224,7 @@
 
     @stack('styles')
 </head>
+
 <body>
     <div class="wrapper">
         <!-- Sidebar -->
@@ -224,7 +249,8 @@
                             $productMenuActive = request()->is('admin/products*') || request()->is('admin/categories*');
                         @endphp
 
-                        <a class="nav-link {{ $productMenuActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#menuProduk">
+                        <a class="nav-link {{ $productMenuActive ? '' : 'collapsed' }}" data-bs-toggle="collapse"
+                            href="#menuProduk">
                             <i class="bi bi-box-seam"></i>
                             <span>Manajemen Produk</span>
                             <i class="bi bi-chevron-down ms-auto"></i>
@@ -233,24 +259,25 @@
                             <ul class="nav flex-column ms-4">
 
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}" 
-                                    href="/admin/products">
+                                    <a class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+                                        href="/admin/products">
                                         <i class="bi bi-bag"></i>
                                         <span>Produk</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}" 
-                                    href="/admin/categories">
+                                    <a class="nav-link {{ request()->is('admin/categories*') ? 'active' : '' }}"
+                                        href="/admin/categories">
                                         <i class="bi bi-tags"></i>
                                         <span>Kategori</span>
                                     </a>
                                 </li>
-        </ul>
-    </div>
-</li>
+                            </ul>
+                        </div>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('admin/pemesanan*') ? 'active' : '' }}" href="/admin/pemesanan">
+                        <a class="nav-link {{ request()->is('admin/pemesanan*') ? 'active' : '' }}"
+                            href="/admin/pemesanan">
                             <i class="bi bi-cart"></i><span>Pesanan</span>
                         </a>
                     </li>
@@ -267,42 +294,49 @@
                             @yield('page_header')
                         </div>
                         @auth
-                        <div class="d-flex align-items-center gap-2 ms-auto">
-                        <!-- Tombol Dark Mode -->
-                        <span id="darkModeLabel" style="font-weight:400;">Light Mode</span>
-                        <div class="form-check form-switch m-0 position-relative">
-                            <input class="form-check-input" type="checkbox" id="darkModeSwitch" style="width:3rem; height:1.5rem;">
-                            <label class="form-check-label mb-0 d-flex align-items-center justify-content-between px-2" for="darkModeSwitch" style="width:3rem; cursor:pointer;">
-                                <i class="bi bi-sun-fill" style="color:#FFD700; font-size:1.3rem;"></i>
-                                <i class="bi bi-moon-fill" style="color:#f1f1f1; font-size:1.3rem;"></i>
-                            </label>
-                        </div>
-                        <div class="dropdown ms-auto">
-                            <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-2"></i> {{ auth()->user()->name }}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                        <i class="bi bi-gear me-2"></i> Manage Profile
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
-                                            <i class="bi bi-box-arrow-right me-2"></i> Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                        @endauth
-                    </div>
-                </div>
-            @endif
+                        <div class="d-flex align-items-center gap-0 ms-auto">
+                            <!-- Dark Mode Toggle -->
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Jika ingin tetap ada label, beri gap 1 atau 2 -->
+                                <span id="darkModeLabel" style="font-weight:400;">Light Mode</span>
+                                <div class="form-check form-switch m-0 position-relative">
+                                    <input class="form-check-input" type="checkbox" id="darkModeSwitch"
+                                        style="width:3rem; height:1.5rem; cursor:pointer;">
+                                    <label class="form-check-label d-flex align-items-center justify-content-between mb-0 px-2"
+                                        for="darkModeSwitch" style="width:3rem; cursor:pointer;">
+                                        <i class="bi bi-sun-fill" style="color:#FFD700; font-size:1.3rem;"></i>
+                                        <i class="bi bi-moon-fill" style="color:#f1f1f1; font-size:1.3rem;"></i>
+                                    </label>
+                                </div>
+                            </div>
 
+                            <!-- User Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle d-flex align-items-center" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-2"></i> {{ auth()->user()->name }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                            <i class="bi bi-gear me-2"></i> Manage Profile
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endauth
+                        </div>
+                    </div>
+            @endif
             @yield('content')
         </div>
     </div>
@@ -328,45 +362,46 @@
 
     @stack('scripts')
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkModeSwitch = document.getElementById('darkModeSwitch');
-        const body = document.body;
-        const sunIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-sun-fill');
-        const moonIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-moon-fill');
-        const modeLabel = document.getElementById('darkModeLabel');
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkModeSwitch = document.getElementById('darkModeSwitch');
+            const body = document.body;
+            const sunIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-sun-fill');
+            const moonIcon = darkModeSwitch?.nextElementSibling.querySelector('.bi-moon-fill');
+            const modeLabel = document.getElementById('darkModeLabel');
 
-        // Set dark mode jika sudah di localStorage
-        if (localStorage.getItem('darkMode') === 'enabled') {
-            body.classList.add('dark-mode');
-            if (darkModeSwitch) darkModeSwitch.checked = true;
-            if (sunIcon) sunIcon.style.display = 'none';
-            if (moonIcon) moonIcon.style.display = 'inline';
-            if (modeLabel) modeLabel.textContent = 'Dark Mode';
-        } else {
-            if (sunIcon) sunIcon.style.display = 'inline';
-            if (moonIcon) moonIcon.style.display = 'none';
-            if (modeLabel) modeLabel.textContent = 'Light Mode';
-        }
+            // Set dark mode jika sudah di localStorage
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                if (darkModeSwitch) darkModeSwitch.checked = true;
+                if (sunIcon) sunIcon.style.display = 'none';
+                if (moonIcon) moonIcon.style.display = 'inline';
+                if (modeLabel) modeLabel.textContent = 'Dark Mode';
+            } else {
+                if (sunIcon) sunIcon.style.display = 'inline';
+                if (moonIcon) moonIcon.style.display = 'none';
+                if (modeLabel) modeLabel.textContent = 'Light Mode';
+            }
 
-        // Toggle switch
-        if (darkModeSwitch) {
-            darkModeSwitch.addEventListener('change', () => {
-                if (darkModeSwitch.checked) {
-                    body.classList.add('dark-mode');
-                    localStorage.setItem('darkMode', 'enabled');
-                    sunIcon.style.display = 'none';
-                    moonIcon.style.display = 'inline';
-                    modeLabel.textContent = 'Dark Mode';
-                } else {
-                    body.classList.remove('dark-mode');
-                    localStorage.setItem('darkMode', 'disabled');
-                    sunIcon.style.display = 'inline';
-                    moonIcon.style.display = 'none';
-                    modeLabel.textContent = 'Light Mode';
-                }
-            });
-        }
-    });
+            // Toggle switch
+            if (darkModeSwitch) {
+                darkModeSwitch.addEventListener('change', () => {
+                    if (darkModeSwitch.checked) {
+                        body.classList.add('dark-mode');
+                        localStorage.setItem('darkMode', 'enabled');
+                        sunIcon.style.display = 'none';
+                        moonIcon.style.display = 'inline';
+                        modeLabel.textContent = 'Dark Mode';
+                    } else {
+                        body.classList.remove('dark-mode');
+                        localStorage.setItem('darkMode', 'disabled');
+                        sunIcon.style.display = 'inline';
+                        moonIcon.style.display = 'none';
+                        modeLabel.textContent = 'Light Mode';
+                    }
+                });
+            }
+        });
     </script>
 </body>
+
 </html>

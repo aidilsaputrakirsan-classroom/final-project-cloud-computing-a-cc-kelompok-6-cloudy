@@ -18,16 +18,17 @@
 {{-- Content --}}
 @section('content')
 <div class="max-w-4xl mx-auto p-6 relative">
-    {{-- Tombol Close / Kembali --}}
-    <a href="{{ route('user.catalog') }}" 
-    class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 p-1 rounded-full hover:bg-gray-200 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </a>
-
-    {{-- Judul Form --}}
-    <h1 class="text-2xl font-bold mb-6">Form Pesanan Produk</h1>
+    
+    {{-- Judul + Tombol Close --}}
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Pesan Produk</h1>
+        <a href="{{ route('user.catalog') }}" 
+            class="text-gray-500 hover:text-gray-800 p-1 rounded-full hover:bg-gray-200 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </a>
+    </div>
 
     {{-- Popup sukses --}}
     @if(session('success'))

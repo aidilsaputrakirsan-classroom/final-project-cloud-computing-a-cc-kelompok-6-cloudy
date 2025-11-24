@@ -25,8 +25,11 @@ class AdminDashboardController extends Controller
 
     // Tabel transaksi terbaru (filter by date jika dipilih)
     $latestOrders = Order::where('status', 'completed')
-    ->orderBy('created_at', 'desc')
-    ->get();
+        ->when(request('date'), function ($query, $date) {
+            $query->whereDate('created_at', $date);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
 
     return view('admin.dashboard', [
         'totalProducts' => $totalProducts,
