@@ -82,7 +82,7 @@
                 <div class="absolute inset-0 bg-black/30"></div>
 
                 <!-- TEXT -->
-            <div class="absolute left-1/2 -translate-x-1/2 top-[70%] -translate-y-1/2 text-center text-white w-full px-4">
+                <div class="absolute left-1/2 -translate-x-1/2 top-[70%] -translate-y-1/2 text-center text-white w-full px-4">
                     <h1 class="text-3xl md:text-5xl font-light mb-1">Temukan Fashion Anda!</h1>
                     <p class="text-lg md:text-2xl mb-3">Koleksi 2025</p>
 
@@ -136,6 +136,7 @@
 
                             <!-- Product Image -->
                             <div class="relative">
+                            <a href="{{ route('user.product.detail', $product->id) }}">
                                 @if($product->image)
                                     @if(str_starts_with($product->image, 'http'))
                                         <img src="{{ $product->image }}" class="w-full h-[280px] object-cover">
@@ -145,6 +146,7 @@
                                 @else
                                     <img src="https://via.placeholder.com/400x300?text=No+Image" class="w-full h-[280px] object-cover">
                                 @endif
+                            </a>
 
                                 @if($product->stock <= 10 && $product->stock > 0)
                                     <span class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
