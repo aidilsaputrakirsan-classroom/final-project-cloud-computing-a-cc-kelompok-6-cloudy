@@ -21,6 +21,7 @@
         }
     </style>
 </head>
+
 <body class="bg-white">
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -34,20 +35,17 @@
 
                 <!-- Navigation -->
                 <nav class="flex space-x-6">
-
                     <!-- Semua -->
                     <a href="{{ route('user.catalog') }}"
                     class="{{ request('category') ? 'text-gray-700' : 'font-bold text-[#0E5DA5]' }}">
                         Semua
                     </a>
-
                     @foreach($categories as $category)
                         <a href="{{ route('user.catalog', ['category' => $category->slug]) }}"
                         class="{{ request('category') == $category->slug ? 'font-bold text-[#0E5DA5]' : 'text-gray-700' }}">
                             {{ $category->name }}
                         </a>
                     @endforeach
-
                 </nav>
                 
                 <!-- Search & Actions -->
@@ -55,7 +53,7 @@
                     <div class="relative block">
                         <input 
                             type="text" 
-                            placeholder="Yuk, cari style kamu..." 
+                            placeholder="Yuk, cari fashion kamu..." 
                             class="border border-gray-300 rounded-full px-4 py-2 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]"
                             id="searchInput"
                             value="{{ request('search') }}">
@@ -84,11 +82,11 @@
                 <div class="absolute inset-0 bg-black/30"></div>
 
                 <!-- TEXT -->
-            <div class="absolute left-1/2 -translate-x-1/2 top-[70%] -translate-y-1/2 text-center text-white w-full px-4">
+                <div class="absolute left-1/2 -translate-x-1/2 top-[70%] -translate-y-1/2 text-center text-white w-full px-4">
                     <h1 class="text-3xl md:text-5xl font-light mb-1">Temukan Fashion Anda!</h1>
                     <p class="text-lg md:text-2xl mb-3">Koleksi 2025</p>
 
-                    <button class="bg-[#0E5DA5] text-white px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition">
+                    <button id="scrollToProducts" class="bg-[#0E5DA5] text-white px-6 py-3 rounded-md font-medium hover:bg-gray-200 transition">
                         Belanja Sekarang
                     </button>
                 </div>
@@ -129,7 +127,7 @@
         </section>
 
         <!-- PRODUCT GRID -->
-        <section class="mt-12 mb-10">
+        <section id="productsSection" class="mt-12 mb-10">
             <h2 class="text-xl font-semibold mb-6 text-center">Produk</h2>
             @if($products->count() > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -138,6 +136,7 @@
 
                             <!-- Product Image -->
                             <div class="relative">
+                            <a href="{{ route('user.product.detail', $product->id) }}">
                                 @if($product->image)
                                     @if(str_starts_with($product->image, 'http'))
                                         <img src="{{ $product->image }}" class="w-full h-[280px] object-cover">
@@ -147,6 +146,7 @@
                                 @else
                                     <img src="https://via.placeholder.com/400x300?text=No+Image" class="w-full h-[280px] object-cover">
                                 @endif
+                            </a>
 
                                 @if($product->stock <= 10 && $product->stock > 0)
                                     <span class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs">
@@ -173,10 +173,11 @@
                                         </span>
                                     </span>
 
-                                    @if($product->stock > 0)
-                                        <button class="bg-[#0E5DA5] text-white px-4 py-2 rounded-md hover:bg-[#0c508f] text-sm">
+                                    @if($product->stock > 0)                                     
+                                        <a href="{{ route('order.create', $product->id) }}" 
+                                            class="bg-[#0E5DA5] text-white px-4 py-2 rounded-md hover:bg-[#0c508f] text-sm">
                                             Pesan Sekarang
-                                        </button>
+                                        </a>
 
                                     @else
                                         <button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-md text-sm">
@@ -189,10 +190,6 @@
                     @endforeach
                 </div>
 
-                <div class="mt-10">
-                    {{ $products->appends(request()->query())->links() }}
-                </div>
-
             @else
                 <div class="text-center py-16 text-gray-500">
                     Tidak ada produk untuk kategori ini.
@@ -201,8 +198,9 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-[rgba(14,93,165,0.1)] border-t border-gray-200 mt-16">
+    {{-- Footer --}}
+    @section('footer')
+    <footer class="bg-[rgba(14,93,165,0.1)] border-t border-gray-200 mt-5">
         <div class="container mx-auto px-8 py-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -231,7 +229,7 @@
                     <h3 class="text-lg font-bold text-gray-900 mb-4">NEWSLETTER</h3>
                     <p class="text-gray-600 text-sm mb-4">Be the first to know about our newest arrivals, special offers and store events.</p>
                     <div class="flex">
-                        <input type="email" placeholder="Enter your email address" class="flex-1 border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]">
+                        <input type="email" placeholder="Enter your email" class="flex-1 border border-gray-300 rounded-l-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]">
                         <button class="bg-[#0E5DA5] text-white px-6 py-2 rounded-r-md hover:bg-blue-700">SIGN UP</button>
                     </div>
                 </div>
@@ -258,6 +256,12 @@
                 window.location.href = url.toString();
             }
         });
+    </script>
+    <script>
+    document.getElementById('scrollToProducts').addEventListener('click', function() {
+        const productsSection = document.getElementById('productsSection');
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+    });
     </script>
 </body>
 </html>

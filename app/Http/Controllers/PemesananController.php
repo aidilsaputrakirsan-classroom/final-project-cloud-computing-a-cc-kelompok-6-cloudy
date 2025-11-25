@@ -4,36 +4,54 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
-Class PemesananController extends Controller
+class PemesananController extends Controller
 {
     public function index(Request $request)
     {
-        $searchKeyword = trim((string) $request->query('q', ''));
+        $q = $request->q; // konsisten dengan controller lain
 
-        $products = Product::with('category')
-            ->when($searchKeyword !== '', function ($query) use ($searchKeyword) {
-                $like = '%' . $searchKeyword . '%';
-                // Use ILIKE for PostgreSQL case-insensitive search
-                $query->where(function ($subQuery) use ($like) {
-                    $subQuery->where('name', 'ILIKE', $like)
-                        ->orWhere('description', 'ILIKE', $like);
-                })
-                ->orWhereHas('category', function ($catQuery) use ($like) {
-                    $catQuery->where('name', 'ILIKE', $like);
+        $query = Order::with('product.category');
+
+        // Filter kategori
+        if ($q) {
+            $query->where(function($sub) use ($q) {
+                $sub->whereHas('product', function($p) use ($q) {
+                    $p->where('name', 'LIKE', "%{$q}%")
+                      ->orWhereHas('category', function($c) use ($q) {
+                          $c->where('name', 'ILIKE', "%{$q}%");
+                      });
                 });
-            })
-            ->orderBy('name')
-            ->get();
+            });
+        }
 
-        $categories = Category::where('is_active', true)->orderBy('name')->get();
-        
-        return view('admin.pemesanan.index', [
-            'products' => $products,
-            'categories' => $categories,
-            'q' => $searchKeyword,
+        // Pagination + tetap bawa parameter
+        $orders = $query->latest()->paginate(10)->appends(request()->query());
+        $categories = Category::all(); // optional, kalau mau dropdown filter kategori
+
+        return view('admin.pemesanan.index', compact('orders', 'categories', 'q'));
+    }
+    
+    public function update(Request $request, $id)
+    {
+        // Validasi request (misal status wajib ada)
+        $request->validate([
+            'status' => 'required|string|in:pending,processing,shipping,completed,cancelled',
         ]);
+
+        $order = Order::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return redirect()->route('admin.pemesanan.index')->with('success', 'Pesanan berhasil dihapus.');
     }
 }

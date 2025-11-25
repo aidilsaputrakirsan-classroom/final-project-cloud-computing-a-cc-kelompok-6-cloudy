@@ -26,9 +26,6 @@
     .form-control, .form-select { border-radius: 8px; border: 1px solid #dee2e6; padding: 0.75rem; transition: all 0.3s; }
     .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
     .badge-stok { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
-    .badge-stok-tersedia { background-color: #d1f2d4; color: #006d0d; }
-    .badge-stok-habis { background-color: #f8c1c1; color: #d63031; }
-    .badge-stok-sedikit { background-color: #ffeaa7; color: #fdcb6e; }
     .bg-pink { background-color: #ff69b4 !important; color: white; }
     .form-select { max-width: 250px; border-radius: 8px; }
     .toast-container { min-width: 350px; max-width: 400px; z-index: 9999; }
@@ -37,6 +34,9 @@
     .toast-error .toast-header { background-color: #dc3545; color: white; }
     .toast-warning .toast-header { background-color: #ffc107; color: white; }
     .toast-body { background-color: white; padding: 0.75rem; }
+    .pagination .page-link { color: #0E5DA5; background-color: #ffffff; border-color: #0E5DA5; }
+    .pagination .page-link:hover { background-color: #1067b8; border-color: #0E5DA5; color: #fff; }
+    .pagination .page-item.active .page-link { background-color: #0E5DA5; border-color: #0E5DA5; color: #fff; }
     @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @media (max-width: 768px) { .table-responsive { overflow-x: auto; } .page-header { text-align: center; } .btn-tambah { width: 100%; margin-bottom: 1rem; } .nav-tabs .nav-link { padding: 0.5rem 0.75rem; font-size: 0.875rem; } .product-img { width: 60px; height: 60px; } .toast-container { min-width: 300px; max-width: 90%; right: 10px; } }
 </style>
@@ -92,125 +92,83 @@
                     <p class="text-muted mb-0">Kelola pemesanan produk</p>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <form method="GET" action="{{ route('admin.products.index') }}" class="d-flex" role="search">
+                    <form method="GET" action="{{ route('admin.pemesanan.index') }}" class="d-flex" role="search">
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                            <input type="text" name="q" value="{{ request('q', $q ?? '') }}" class="form-control" placeholder="Cari produk atau kategori..." />
+                            <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari produk atau kategori..." />
                             @if(request('q'))
-                                <a href="{{ route('admin.products.index') }}" class="btn btn-outline-secondary">Reset</a>
+                                <a href="{{ route('admin.pemesanan.index') }}" class="btn btn-outline-secondary">Reset</a>
                             @endif
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
         <div class="card">
             <div class="card shadow-sm border-0 rounded-3">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th style="width: 5%">No</th>
-                        <th style="width: 12%">Kode Order</th>
-                        <th style="width: 18%">Customer</th>
-                        <th style="width: 25%">Produk</th>
-                        <th style="width: 12%">Total</th>
-                        <th style="width: 15%">Status</th>
-                        <th style="width: 13%">Aksi</th>
-                    </tr>
-                </thead>
-
-                @php
-                $products = $products ?? collect();
-                $categories = $categories ?? collect();
-
-                $needsDummy = !isset($orders) || (is_countable($orders) && count($orders) === 0) || (is_object($orders) && method_exists($orders,'isEmpty') && $orders->isEmpty());
-                if ($needsDummy) {
-                    $orders = collect([
-                        (object)[
-                            'id' => 1,
-                            'order_code' => 'DUMMY-001',
-                            'customer' => (object)['name' => 'John Sample'],
-                            'items' => collect([
-                                (object)['product' => (object)['name' => 'Produk Contoh A'], 'qty' => 2],
-                                (object)['product' => (object)['name' => 'Produk Contoh B'], 'qty' => 1],
-                            ]),
-                            'total' => 125000,
-                            'status' => 'pending',
-                        ],
-                        (object)[
-                            'id' => 2,
-                            'order_code' => 'DUMMY-002',
-                            'customer' => (object)['name' => 'Jane Example'],
-                            'items' => collect([
-                                (object)['product' => (object)['name' => 'Produk Demo C'], 'qty' => 1],
-                            ]),
-                            'total' => 75000,
-                            'status' => 'processing',
-                        ],
-                    ]);
-                }
-                @endphp
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">No</th>
+                                    <th style="width: 10%">Kategori</th>
+                                    <th style="width: 30%">Nama Produk</th>
+                                    <th style="width: 5%">Qty</th>
+                                    <th style="width: 10%">Total</th>
+                                    <th style="width: 15%">Bukti Pembayaran</th>
+                                    <th style="width: 15%">Status</th>
+                                    <th style="width: 15%">Aksi</th>
+                                </tr>
+                            </thead>
                 <tbody>
-                    @forelse($orders as $index => $order)
+                    @forelse ($orders as $o)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-
-                        <td><strong>#{{ $order->order_code }}</strong></td>
-
-                        <td>{{ $order->customer->name ?? 'Tidak diketahui' }}</td>
-
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $o->product->category->name ?? '-' }}</td>
                         <td>
-                            @foreach($order->items as $item)
-                                <div>{{ $item->product->name }} ({{ $item->qty }})</div>
-                            @endforeach
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                            @if($o->product->image)
+                                <img src="{{ asset('storage/' . $o->product->image) }}" alt="Produk" style="width: 50px; height: 50px; object-fit: cover;">
+                            @endif
+                            <span>{{ $o->product->name }}</span>
+                            </div>
                         </td>
-
-                        <td><strong class="text-success">Rp {{ number_format($order->total, 0, ',', '.') }}</strong></td>
-
+                        <td>{{ $o->quantity }}</td>
+                        <td>Rp {{ number_format($o->total, 0, ',', '.') }}</td>
                         <td>
-                            <form action="" method="POST">
+                            @if($o->proof)
+                            <a href="{{ asset('storage/' . $o->proof) }}" target="_blank">Lihat</a>
+                            @else
+                            -
+                            @endif
+                        </td>
+                        <td>
+                            <form action="{{ route('admin.pemesanan.update', $o->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-
                                 <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>
-                                        Pending
-                                    </option>
-                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>
-                                        Diproses
-                                    </option>
-                                    <option value="shipping" {{ $order->status == 'shipping' ? 'selected' : '' }}>
-                                        Dikirim
-                                    </option>
-                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>
-                                        Selesai
-                                    </option>
-                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
-                                        Dibatalkan
-                                    </option>
+                                    <option value="pending" {{ $o->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="processing" {{ $o->status == 'processing' ? 'selected' : '' }}>Diproses</option>
+                                    <option value="shipping" {{ $o->status == 'shipping' ? 'selected' : '' }}>Dikirim</option>
+                                    <option value="completed" {{ $o->status == 'completed' ? 'selected' : '' }}>Selesai</option>
+                                    <option value="cancelled" {{ $o->status == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
                                 </select>
                             </form>
                         </td>
-
                         <td>
-                            <a href="" class="btn btn-action btn-edit">
+                            <a href="{{ route('admin.pemesanan.index', $o->id) }}" class="btn btn-action btn-edit">
                                 <i class="bi bi-eye"></i>
                             </a>
-
-                            <form id="delete-order-{{ $order->id }}" action="" method="POST" style="display:inline;">
+                            <form id="delete-order-{{ $o->id }}" action="{{ route('admin.pemesanan.destroy', $o->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-
-                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $order->id }}, '#{{ $order->order_code }}')">
+                                <button type="button" class="btn btn-action btn-delete" onclick="confirmDelete({{ $o->id }}, '{{ $o->product->name }}')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
                         </td>
                     </tr>
-
                     @empty
                     <tr>
                         <td colspan="7" class="text-center py-4">
@@ -221,139 +179,19 @@
                     @endforelse
                 </tbody>
             </table>
-
+            <div class="mt-3 px-3">
+                {{ $orders->appends(['q' => request('q')])->links() }}
+            </div>
         </div>
     </div>
 </div>
-
-    </div>
-
-    <!-- Modal Tambah Produk -->
-    <div class="modal fade" id="modalProduk" tabindex="-1" aria-labelledby="modalProdukLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalProdukLabel">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Produk Baru
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nama Produk</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="category_id" class="form-label">Kategori</label>
-                            <select class="form-select" name="category_id" id="category_id">
-                                <option value="">Pilih Kategori (Opsional)</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            <small class="text-muted">Pilih kategori untuk produk ini (opsional)</small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control" name="description" rows="3" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Harga (Rp)</label>
-                                <input type="number" class="form-control" name="price" min="0" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="stock" class="form-label">Stok</label>
-                                <input type="number" class="form-control" name="stock" min="0" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Gambar Produk</label>
-                            <input type="file" class="form-control" name="image" accept="image/*" required>
-                            <small class="text-muted">Format: JPG, PNG, atau WEBP (Maks. 2MB)</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit Produk -->
-    @foreach($products as $product)
-    <div class="modal fade" id="modalEditProduk{{ $product->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Nama Produk</label>
-                            <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Kategori</label>
-                            <select class="form-select" name="category_id">
-                                <option value="">Pilih Kategori (Opsional)</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $product->category_id == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <small class="text-muted">Pilih kategori untuk produk ini (opsional)</small>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Deskripsi</label>
-                            <textarea class="form-control" name="description" rows="3" required>{{ $product->description }}</textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Harga</label>
-                                <input type="number" class="form-control" name="price" value="{{ $product->price }}" min="0" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Stok</label>
-                                <input type="number" class="form-control" name="stock" value="{{ $product->stock }}" min="0" required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Gambar Produk</label>
-                            <input type="file" class="form-control" name="image" accept="image/*">
-                            <small class="text-muted">Kosongkan jika tidak ingin mengubah gambar. Format: JPG, PNG, atau WEBP (Maks. 2MB)</small>
-                            @if($product->image)
-                                <div class="mt-2">
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="Current" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Perbarui</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    @endforeach
 @endsection
 
 @push('scripts')
 <script>
     function confirmDelete(id, nama) {
         if (confirm(`Apakah Anda yakin ingin menghapus produk "${nama}"?\n\nTindakan ini tidak dapat dibatalkan!`)) {
-            document.getElementById('delete-form-' + id).submit();
+            document.getElementById('delete-order-' + id).submit();
         }
     }
     

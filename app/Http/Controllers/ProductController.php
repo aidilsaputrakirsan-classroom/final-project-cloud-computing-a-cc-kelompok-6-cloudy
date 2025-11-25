@@ -26,7 +26,8 @@ class ProductController extends Controller
                 });
             })
             ->orderBy('name')
-            ->get();
+            ->paginate(10) // ✅ tambahkan paginate
+            ->withQueryString(); // ✅ supaya query pencarian tidak hilang saat pindah halaman
 
         $categories = Category::where('is_active', true)->orderBy('name')->get();
         

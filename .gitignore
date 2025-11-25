@@ -1,5 +1,8 @@
 *.log
 .DS_Store
+#.env
+.env.backup
+.env.prodution
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -12,7 +15,7 @@
 /node_modules
 /public/build
 /public/hot
-/public/storage
+#/public/storage
 /storage/*.key
 /storage/pail
 /vendor
