@@ -27,6 +27,13 @@ Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/admin/activity-log', function () {
+    $logs = \DB::table('activity_logs')
+        ->orderBy('created_at', 'desc')
+        ->paginate(20);
+
+        return view('admin.activity-log', compact('logs'));
+    })->name('admin.activity-log');
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
