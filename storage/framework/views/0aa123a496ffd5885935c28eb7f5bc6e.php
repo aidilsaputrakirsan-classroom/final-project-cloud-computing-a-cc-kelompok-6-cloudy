@@ -33,5 +33,4 @@ unset($__defined_vars, $__key, $__value); ?>
         <?php echo e($status); ?>
 
     </div>
-<?php endif; ?>
-<?php /**PATH C:\laragon\www\Project\final-project-cloud-computing-a-cc-kelompok-6-cloudy\resources\views/components/auth-session-status.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH C:\laragon\www\Project\final-project-cloud-computing-a-cc-kelompok-6-cloudy\resources\views/components/auth-session-status.blade.php ENDPATH**/ ?>
