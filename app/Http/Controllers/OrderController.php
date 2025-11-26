@@ -42,6 +42,7 @@ class OrderController extends Controller
             'quantity'   => $request->quantity,
             'total'      => $total,
             'proof'      => $proofPath,
+            'user_id'    => auth()->id(),
         ]);
 
         // Kurangi stok
