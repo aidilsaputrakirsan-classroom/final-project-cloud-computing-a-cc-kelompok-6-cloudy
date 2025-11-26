@@ -284,7 +284,7 @@
                     <li class="nav-item">
                         <a class="nav-link <?php echo e(request()->is('admin/activity-log*') ? 'active' : ''); ?>"
                             href="/admin/activity-log">
-                            <i class="bi bi-cart"></i><span>Activity Log</span>
+                            <i class="bi bi-clock-history"></i><span>Activity Log</span>
                         </a>
                     </li>
                 </ul>

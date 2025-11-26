@@ -122,7 +122,7 @@
                     <tr>
                         <td class="fw-bold"><?php echo e($loop->iteration); ?></td>
 
-                        <td><?php echo e($order->customer_name ?? '-'); ?></td>
+                        <td><?php echo e($order->user->name ?? '-'); ?></td>
 
                         <td class="fw-semibold">
                             Rp <?php echo e(number_format($order->total, 0, ',', '.')); ?>

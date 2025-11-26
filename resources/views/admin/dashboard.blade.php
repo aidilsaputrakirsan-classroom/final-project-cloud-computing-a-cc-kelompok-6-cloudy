@@ -124,7 +124,7 @@
                     <tr>
                         <td class="fw-bold">{{ $loop->iteration }}</td>
 
-                        <td>{{ $order->customer_name ?? '-' }}</td>
+                        <td>{{ $order->user->name ?? '-' }}</td>
 
                         <td class="fw-semibold">
                             Rp {{ number_format($order->total, 0, ',', '.') }}
