@@ -24,8 +24,7 @@ Route::get('/', function () {
 // User Catalog routes
 Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
 
-
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin/activity-log', function () {
     $logs = \DB::table('activity_logs')
@@ -40,7 +39,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    
     // Tambahan Baru: User Product Detail
     Route::get('/user/product/{id}', [UserProductController::class, 'detail'])
         ->name('user.product.detail');
@@ -53,7 +51,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-   
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin', fn () => redirect('/admin/products'))->name('admin.index');
     
@@ -67,7 +64,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
     });
 
-    
     // Products routes
     Route::prefix('admin/products')->name('admin.products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
