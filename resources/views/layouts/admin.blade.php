@@ -281,6 +281,12 @@
                             <i class="bi bi-cart"></i><span>Pesanan</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/activity-log*') ? 'active' : '' }}"
+                            href="/admin/activity-log">
+                            <i class="bi bi-clock-history"></i><span>Activity Log</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </div>

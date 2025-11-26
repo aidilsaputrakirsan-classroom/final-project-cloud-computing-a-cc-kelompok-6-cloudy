@@ -27,6 +27,18 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
+        // Activity Log
+        \DB::table('activity_logs')->insert([
+            'user_id'    => $request->user()->id,
+            'name'       => $request->user()->name,
+            'role'       => $request->user()->role,
+            'ip'         => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+            'activity'   => 'Login',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         return $request->user()->role === 'admin'
             ? redirect()->route('dashboard')
             : redirect()->route('user.catalog');
@@ -37,6 +49,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Activity Log Logout
+        \DB::table('activity_logs')->insert([
+            'user_id'    => auth()->id(),
+            'name'       => auth()->user()->name,
+            'role'       => auth()->user()->role,
+            'ip'         => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+            'activity'   => 'Logout',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

@@ -48,19 +48,63 @@
                     @endforeach
                 </nav>
                 
-                <!-- Search & Actions -->
-                <div class="flex items-center space-x-4">
-                    <div class="relative block">
-                        <input 
-                            type="text" 
-                            placeholder="Yuk, cari fashion kamu..." 
-                            class="border border-gray-300 rounded-full px-4 py-2 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]"
-                            id="searchInput"
-                            value="{{ request('search') }}">
-                        <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+            <div class="flex items-center space-x-4">
+                {{-- Search --}}
+                <div class="relative block">
+                    <input 
+                        type="text" 
+                        placeholder="Yuk, cari fashion kamu..." 
+                        class="border border-gray-300 rounded-full px-4 py-2 pr-10 w-64 focus:outline-none focus:ring-2 focus:ring-[#0E5DA5]"
+                        id="searchInput"
+                        value="{{ request('search') }}">
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                {{-- ✅ AUTH BUTTONS MODERN --}}
+                @guest
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('login') }}"
+                            class="text-sm font-semibold text-[#0E5DA5] hover:text-[#094879] transition">
+                            Login
+                        </a>
+
+                        <a href="{{ route('register') }}"
+                            class="text-sm font-semibold bg-[#0E5DA5] text-white px-4 py-2 rounded-full
+                                shadow hover:bg-[#094879] transition">
+                            Register
+                        </a>
                     </div>
+                @endguest
+
+                @auth
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-full shadow-sm hover:shadow-md transition">
+                            <div class="w-7 h-7 bg-[#0E5DA5] text-white flex items-center justify-center rounded-full text-xs font-bold">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                            <span class="text-sm font-semibold text-gray-700">
+                                {{ Auth::user()->name }}
+                            </span>
+                            <i class="bi bi-caret-down-fill text-xs text-gray-500"></i>
+                        </button>
+
+                        {{-- Dropdown --}}
+                        <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+                            <a href="/activity-log" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                Manage Profile
+                            </a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endauth
                 </div>
             </div>
         </div>
