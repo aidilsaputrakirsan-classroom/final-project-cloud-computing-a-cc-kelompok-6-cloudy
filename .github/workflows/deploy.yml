@@ -1,0 +1,47 @@
+name: 🚀 Auto Deploy ke STB
+
+on:
+  push:
+    branches:
+      - main
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🧰 Install zip utility
+        run: sudo apt-get install zip -y
+
+      - name: 📁 Buat file ZIP untuk deploy
+        run: |
+          zip -r deploy.zip . -x ".git*" -x ".github*" -x "node_modules/*"
+
+      - name: 🚀 Upload ke STB Server
+        id: deploy
+        run: |
+          echo "🚀 Uploading ${{ github.repository }}..."
+          RESPONSE=$(curl -s -S -k -m 60 --connect-timeout 10 \
+            -X POST \
+            -F "repo=${{ github.event.repository.name }}" \
+            -F "file=@deploy.zip" \
+            "https://deploy.akhzafachrozy.my.id/")
+          echo "$RESPONSE"
+          
+          # Ambil port dari respons
+          PORT=$(echo "$RESPONSE" | grep -oP '(?<=Port:\s)\d+')
+          if [ -z "$PORT" ]; then
+            echo "⚠ Port tidak terdeteksi!"
+          else
+            echo "🌐 Aplikasi berjalan di port: $PORT"
+            echo "port=$PORT" >> $GITHUB_OUTPUT
+          fi
+
+      - name: ✅ Selesai
+        run: |
+          echo "🎉 Deploy sukses!"
+          echo "🔗 Log server: /var/log/autodeploy_${{ github.event.repository.name }}.log"
+          echo "🌐 Port aktif: ${{ steps.deploy.outputs.port }}"
