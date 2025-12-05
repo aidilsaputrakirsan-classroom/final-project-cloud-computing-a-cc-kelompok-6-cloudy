@@ -24,7 +24,7 @@ Route::get('/', function () {
 // User Catalog routes
 Route::get('/user/catalog', [UserCatalogController::class, 'index'])->name('user.catalog');
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin/activity-log', function () {
     $logs = \DB::table('activity_logs')
