@@ -407,9 +407,13 @@ Project ini dilisensikan di bawah [MIT License](LICENSE).
 
 ## Credits
 
-- **Laravel Framework** - [https://laravel.com](https://laravel.com)
-- **Soft UI Dashboard** - [https://www.creative-tim.com](https://www.creative-tim.com)
-- **Spatie Laravel Permission** - [https://spatie.be](https://spatie.be)
+- **Laravel 12 Framework** - [https://laravel.com](https://laravel.com)
+- **Laravel Breeze – Autentikasi dan scaffolding sederhana** - [https://laravel.com/docs/12.x/starter-kits#breeze](https://laravel.com/docs/12.x/starter-kits#breeze)
+- **Spatie Laravel Permission – Role & permission management** - [https://spatie.be/docs/laravel-permission/v6/introduction](https://spatie.be/docs/laravel-permission/v6/introduction)
+- **Tailwind CSS 3 – Utility-first CSS framework** - [https://tailwindcss.com](https://tailwindcss.com)
+- **Alpine.js 3 - Minimal JavaScript framework untuk interaktivitas** - [https://alpinejs.dev](https://alpinejs.dev)
+- **Vite 7 – Build tool untuk frontend assets** - [https://vitejs.dev](https://vitejs.dev)
+- **Supabase – Backend-as-a-Service (Auth, Database, Storage)** - [https://supabase.com](https://supabase.com)
 
 ## Support
 
